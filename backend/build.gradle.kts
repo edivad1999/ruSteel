@@ -56,6 +56,7 @@ dependencies {
     val jupyterVersion: String by project
     val exposedVersion: String by project
     val kotlinSerializationVersion: String by project
+    val postgresVersion: String by project
 
     api("org.kodein.di", "kodein-di", kodeinVersion)
     api("org.kodein.di", "kodein-di-framework-ktor-server-jvm", kodeinVersion)
@@ -70,8 +71,8 @@ dependencies {
     implementation("io.ktor:ktor-server-cio:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
-    implementation("io.ktor:ktor-routes.auth:$ktorVersion")
-    implementation("io.ktor:ktor-routes.auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-auth:$ktorVersion")
+    implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
 
@@ -81,7 +82,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
     // DB Driver
-    implementation("org.xerial:sqlite-jdbc:3.30.1")
+    implementation("org.postgresql:postgresql:$postgresVersion")
 
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinxCoroutinesVersion")
