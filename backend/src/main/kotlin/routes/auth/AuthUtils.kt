@@ -50,14 +50,14 @@ interface JWTCredentialsVerifier {
         verify(jwtCredential)
 }
 
-class myJWTCredentialVerifier(override val di: DI) : JWTCredentialsVerifier, DIAware {
+class MyJWTCredentialVerifier(override val di: DI) : JWTCredentialsVerifier, DIAware {
 
     override fun verify(jwtCredential: JWTCredential): BasePrincipal? {
         val username = jwtCredential.payload.getClaim("username").asString()
         val role = Role.valueOf(jwtCredential.payload.getClaim("role").asString())
         val expiresAt = jwtCredential.payload.expiresAt.toInstant()
         if (expiresAt.isBefore(Clock.System.now().toJavaInstant())) return null
-        val db: Database by instance("ALT_USER")
+        val db: Database by instance()
         val user = transaction(db) {
             UserAuth.find {
                 UserAuthTable.username eq username

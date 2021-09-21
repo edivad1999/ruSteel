@@ -34,7 +34,8 @@ repositories {
 
 }
 buildscript {
-    repositories { mavenCentral();
+    repositories {
+        mavenCentral();
     }
 
     dependencies {
@@ -57,6 +58,7 @@ dependencies {
     val exposedVersion: String by project
     val kotlinSerializationVersion: String by project
     val postgresVersion: String by project
+//    val hikariCPVersion: String by project
 
     api("org.kodein.di", "kodein-di", kodeinVersion)
     api("org.kodein.di", "kodein-di-framework-ktor-server-jvm", kodeinVersion)
@@ -81,13 +83,14 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
+    // DB Connection pool
+
+//    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     // DB Driver
     implementation("org.postgresql:postgresql:$postgresVersion")
 
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinxCoroutinesVersion")
-
-
 
 
     //others utils

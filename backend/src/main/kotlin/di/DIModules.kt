@@ -11,8 +11,7 @@ import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance
 import org.kodein.di.singleton
-import routes.auth.Base64Encoder
-import routes.auth.JavaBase64Encoder
+import routes.auth.*
 
 
 object DIModules {
@@ -40,12 +39,23 @@ object DIModules {
         }
     val database
         get() = DI.Module("database") {
-            bind<Database>("database") with singleton {
-                Database.connect( "jdbc:postgresql://localhost:5438", driver = "org.postgresql.Driver",user = "postgres",password = "postgres")
+
+            bind<Database>() with singleton {
+                Database.connect("jdbc:postgresql://localhost:5438/postgres", driver = "org.postgresql.Driver",
+                user = "postgres",password = "postgres")
             }
 
 
         }
 
+    val security
+        get() = DI.Module("security") {
+            bind<JWTCredentialsVerifier>() with singleton {
+                MyJWTCredentialVerifier(di)
+            }
+
+            bind<PasswordDigester>() with singleton { SHA256Digester() }
+
+        }
 
 }

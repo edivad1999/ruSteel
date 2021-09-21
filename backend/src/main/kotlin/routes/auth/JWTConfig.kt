@@ -2,14 +2,14 @@ package routes.auth
 
 import com.auth0.jwt.*
 import com.auth0.jwt.algorithms.*
-import data.UserAuth
 import kotlinx.serialization.Serializable
+import model.dao.UserAuth
 import java.util.*
 
 object JwtConfig {
 
-    private const val secret = "kAONETU3NEbekr934"
-    private const val issuer = "Be4dot0Realm"
+    private const val secret = "17ED96E5E68934C2910E371BA4B22B07B4BEDC52012DC5E0751BEF330F578D89"
+    private const val issuer = "ruSteel"
     private const val validityInMs = 3600000 // 1 hour
     private val algorithm = Algorithm.HMAC512(secret)
 

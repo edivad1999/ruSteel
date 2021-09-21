@@ -1,5 +1,4 @@
 import di.DIModules
-import di.DIModules.serialization
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
@@ -12,12 +11,12 @@ import model.dao.UserAuth
 import model.tables.UserAuthTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.direct
 import org.kodein.di.instance
 import org.kodein.di.ktor.DIFeature
 import org.kodein.di.ktor.di
-import routes.auth.PasswordDigester
-import routes.auth.Role
+import routes.auth.*
 
 
 fun Application.managerModule() {
@@ -25,6 +24,7 @@ fun Application.managerModule() {
     install(DIFeature) {
         import(DIModules.database)
         import(DIModules.serialization)
+        import(DIModules.security)
 
     }
     initDb()
@@ -41,7 +41,18 @@ fun Application.managerModule() {
 //        allowSameOrigin=true
     }
 
-
+    install(Authentication) {
+        val credentialVerifierJWT: JWTCredentialsVerifier by di().instance()
+        Role.values().forEach { role ->
+            jwt(role) {
+                verifier(JwtConfig.verifier)
+                realm = "ruSteel"
+                validate {
+                    credentialVerifierJWT.verify(it)
+                }
+            }
+        }
+    }
 
 
 
@@ -52,6 +63,8 @@ fun Application.managerModule() {
 
     routing {
         route("api") {
+            loginApi()
+            verifierJWTApi()
 
         }
     }
@@ -59,19 +72,19 @@ fun Application.managerModule() {
 }
 
 fun Application.initDb() = launch {
-    val db: Database by instance("database")
-
+    val db: Database by instance()
     val digester: PasswordDigester by instance()
+    transaction(db) {
+        SchemaUtils.createMissingTablesAndColumns(UserAuthTable)
 
-    SchemaUtils.createMissingTablesAndColumns(UserAuthTable)
-
-    val admin = UserAuth.find {
-        UserAuthTable.username eq "admin"
-    }
-    if (admin.empty()) {
-        UserAuth.new {
-            username = "admin"
-            hashPass = digester.digest("password")
+        val admin = UserAuth.find {
+            UserAuthTable.username eq "admin"
+        }
+        if (admin.empty()) {
+            UserAuth.new {
+                username = "admin"
+                hashPass = digester.digest("password")
+            }
         }
     }
 }

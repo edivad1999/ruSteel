@@ -8,7 +8,7 @@ export class Endpoints {
   httpProtocol = 'http';
   wsProtocol = 'ws';
   hostname = 'localhost';
-  port = 69420;
+  port = 42069;
   basePath = 'api';
 
   constructor(@Inject(DOCUMENT) private document: Document) {

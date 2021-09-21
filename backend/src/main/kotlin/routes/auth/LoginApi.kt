@@ -28,7 +28,7 @@ data class LoginRequestData(val username: String, val password: String)
  */
 fun Route.loginApi() = route("login") {
 
-    val db: Database by instance("database")
+    val db: Database by instance()
     val digester: PasswordDigester by instance()
     val b64: Base64Encoder by instance()
 
