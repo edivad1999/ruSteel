@@ -9,3 +9,31 @@ object UserAuthTable : IntIdTable("users", "id") {
     val role = varchar("role", 50).default(Role.USER.name)
 
 }
+
+object OrdersTable : IntIdTable("orders", columnName = "id") {
+    val product = varchar("product", 50)
+    val requestedDate = integer("requestedDate")
+    val requestedQuantity = integer("requestedQuantity")
+    val order = varchar("order", 50)
+    val client = varchar("client", 50)
+    val clientOrderCode = varchar("order", 50)
+    val startDate = integer("startDate")
+    val endDate = integer("endDate")
+    val expectedEndDate = integer("expectedEndDate")
+}
+
+object InternalOrdersTable : IntIdTable("internal-orders", columnName = "id") {
+    val productCode = varchar("productCode", 50)
+    val productQuantity = integer("productQuantity")
+    val rawCode = varchar("rawCode", 50)
+    val rawQuantity = integer("rawQuantity")
+    val operator = varchar("operator", 50)
+    val processes = varchar("processes", 1000)
+
+    val orderPrincipal = integer("orderPrincipal").references(OrdersTable.id)
+}
+
+object ProcessesTable : IntIdTable("processes", columnName = "id") {
+    val process = varchar("process", 50).uniqueIndex()
+
+}
