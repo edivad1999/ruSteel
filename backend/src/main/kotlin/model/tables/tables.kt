@@ -14,7 +14,7 @@ object OrdersTable : IntIdTable("orders", columnName = "id") {
     val product = varchar("product", 50)
     val requestedDate = integer("requestedDate")
     val requestedQuantity = integer("requestedQuantity")
-    val order = varchar("order", 50)
+    val commission = varchar("commission", 50)
     val client = varchar("client", 50)
     val clientOrderCode = varchar("order", 50)
     val startDate = integer("startDate")
@@ -29,7 +29,7 @@ object InternalOrdersTable : IntIdTable("internal-orders", columnName = "id") {
     val rawQuantity = integer("rawQuantity")
     val operator = varchar("operator", 50)
     val processes = varchar("processes", 1000)
-
+    val externalTreatments = varchar("externalTreatments", 50)
     val orderPrincipal = integer("orderPrincipal").references(OrdersTable.id)
 }
 

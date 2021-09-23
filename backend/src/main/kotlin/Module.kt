@@ -7,7 +7,11 @@ import io.ktor.http.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import kotlinx.coroutines.launch
+import model.dao.Processes
 import model.dao.UserAuth
+import model.tables.InternalOrdersTable
+import model.tables.OrdersTable
+import model.tables.ProcessesTable
 import model.tables.UserAuthTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -76,6 +80,34 @@ fun Application.initDb() = launch {
     val digester: PasswordDigester by instance()
     transaction(db) {
         SchemaUtils.createMissingTablesAndColumns(UserAuthTable)
+        SchemaUtils.createMissingTablesAndColumns(OrdersTable)
+        SchemaUtils.createMissingTablesAndColumns(InternalOrdersTable)
+        SchemaUtils.createMissingTablesAndColumns(ProcessesTable)
+
+        //init processes
+        val baseProcesses = listOf<String>("Taglio",
+            "Tornitura sgrosso",
+            "Tornitura",
+            "Foratura",
+            "Fresatura",
+            "Brocciatura",
+            "Grani",
+            "Foratura estrazione",
+            "Saldatura",
+            "Bilanciatura",
+            "Montaggio",
+            "Verniciatura",
+            "Tornitura manuale",
+            "Outsourcing",
+            "Imballaggio")
+
+        if (Processes.count().toInt() == 0) {
+            baseProcesses.forEach {
+                Processes.new {
+                    process = it
+                }
+            }
+        }
 
         val admin = UserAuth.find {
             UserAuthTable.username eq "admin"

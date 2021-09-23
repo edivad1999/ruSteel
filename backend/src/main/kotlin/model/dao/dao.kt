@@ -30,7 +30,7 @@ class Orders(id: EntityID<Int>) : IntEntity(id) {
     val product by OrdersTable.product
     val requestedDate by OrdersTable.requestedDate
     val requestedQuantity by OrdersTable.requestedQuantity
-    val order by OrdersTable.order
+    val commission by OrdersTable.commission
     val client by OrdersTable.client
     val clientOrderCode by OrdersTable.clientOrderCode
     val startDate by OrdersTable.startDate
@@ -38,6 +38,7 @@ class Orders(id: EntityID<Int>) : IntEntity(id) {
     val expectedEndDate by OrdersTable.expectedEndDate
     private val internalOrders by InternalOrders referrersOn InternalOrdersTable.orderPrincipal
     fun getInternalOrders() = internalOrders.toList()
+
 }
 
 class InternalOrders(id: EntityID<Int>) : IntEntity(id) {
@@ -51,6 +52,8 @@ class InternalOrders(id: EntityID<Int>) : IntEntity(id) {
     var rawQuantity by InternalOrdersTable.rawQuantity
     var operator by InternalOrdersTable.operator
     private var processes by InternalOrdersTable.processes
+    var externalTreatments by InternalOrdersTable.externalTreatments
+
 
     val orderPrincipal = InternalOrdersTable.orderPrincipal
 
