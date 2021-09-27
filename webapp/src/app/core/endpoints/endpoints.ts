@@ -24,6 +24,26 @@ export class Endpoints {
     return this.buildUrl('login');
   }
 
+  getOrderByIdUrl(id: number) {
+    return this.buildUrl(`order/id?id=${id}`);
+  }
+
+  getAllOrdersUrl() {
+    return this.buildUrl('order/all');
+  }
+
+  removeOrderbyIdUrl(id: number) {
+    return this.buildUrl(`order/remove?id=${id}`);
+  }
+
+  editOrderbyIdUrl(id: number) {
+    return this.buildUrl(`order/edit?id=${id}`);
+  }
+
+  newOrderUrl() {
+    return this.buildUrl(`order/new`);
+  }
+
 
   protected buildUrl(finalPath: string, type: 'ws' | 'http' = 'http'): string {
     let url = `${type === 'http' ? this.httpProtocol : this.wsProtocol}://${this.hostname}`;

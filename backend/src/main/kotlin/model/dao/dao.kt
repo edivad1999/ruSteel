@@ -22,27 +22,27 @@ class UserAuth(id: EntityID<Int>) : IntEntity(id) {
 
 }
 
-class Orders(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Orders>(
+class Order(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Order>(
         OrdersTable
     )
 
-    val product by OrdersTable.product
-    val requestedDate by OrdersTable.requestedDate
-    val requestedQuantity by OrdersTable.requestedQuantity
-    val commission by OrdersTable.commission
-    val client by OrdersTable.client
-    val clientOrderCode by OrdersTable.clientOrderCode
-    val startDate by OrdersTable.startDate
-    val endDate by OrdersTable.endDate
-    val expectedEndDate by OrdersTable.expectedEndDate
-    private val internalOrders by InternalOrders referrersOn InternalOrdersTable.orderPrincipal
+    var product by OrdersTable.product
+    var requestedDate by OrdersTable.requestedDate
+    var requestedQuantity by OrdersTable.requestedQuantity
+    var commission by OrdersTable.commission
+    var client by OrdersTable.client
+    var clientOrderCode by OrdersTable.clientOrderCode
+    var startDate by OrdersTable.startDate
+    var endDate by OrdersTable.endDate
+    var expectedEndDate by OrdersTable.expectedEndDate
+    private val internalOrders by InternalOrder referrersOn InternalOrdersTable.orderPrincipal
     fun getInternalOrders() = internalOrders.toList()
 
 }
 
-class InternalOrders(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<InternalOrders>(
+class InternalOrder(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<InternalOrder>(
         InternalOrdersTable
     )
 
@@ -55,7 +55,7 @@ class InternalOrders(id: EntityID<Int>) : IntEntity(id) {
     var externalTreatments by InternalOrdersTable.externalTreatments
 
 
-    val orderPrincipal = InternalOrdersTable.orderPrincipal
+    var orderPrincipal by InternalOrdersTable.orderPrincipal
 
     fun getProcesses() = processes.replace("\\s".toRegex(), "").split(',')
     fun setProcesses(proc: List<String>) {
@@ -63,8 +63,8 @@ class InternalOrders(id: EntityID<Int>) : IntEntity(id) {
     }
 }
 
-class Processes(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Processes>(
+class Process(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Process>(
         ProcessesTable
     )
 

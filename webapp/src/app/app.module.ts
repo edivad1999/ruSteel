@@ -30,6 +30,7 @@ import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { HomeComponent } from './components/home/home.component';
+import { OrdersComponent } from './components/orders/orders.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { HomeComponent } from './components/home/home.component';
     LoginComponent,
     LogoutComponent,
     HomeComponent,
+    OrdersComponent,
   ],
   imports: [
     BrowserModule,

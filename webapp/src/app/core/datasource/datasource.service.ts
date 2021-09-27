@@ -3,17 +3,10 @@ import {Observable, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
 import {Endpoints} from '../endpoints/endpoints';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {AuthTokenData, SimpleStringResponse} from '../../data/requests';
-import {
-  BlobWrapper,
-  EmailSetting,
-  EpilationTable,
-  LogEntry,
-  MdsTreatParamFavorite, MdsTreatParamFavoriteRequest,
-  MdsTreatParamFavoriteResponse,
-  SystemStatus
-} from '../../domain/model/data';
+import {HttpClient} from '@angular/common/http';
+import {AuthTokenData} from '../../data/requests';
+import {Order} from "../../domain/model/data";
+
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +25,57 @@ export class DatasourceService {
       this.endpoints.loginWithEmailAndPasswordUrl(),
       {username: btoa(username), password: btoa(password)}/*,{headers}*/
     );
+  }
+
+  getOrderById(id: number): Observable<Order> {
+    return this.httpClient.get(
+      this.endpoints.getOrderByIdUrl(id),
+      {observe: "response"}
+    ).pipe(
+      map(value => value.body as Order)
+    )
+  }
+
+  getAllOrders(): Observable<Order[]> {
+    return this.httpClient.get(
+      this.endpoints.getAllOrdersUrl(),
+      {observe: "response"}
+    ).pipe(
+      map(value => value.body as Order[])
+    )
+  }
+
+  removeOrderbyId(id: number): Observable<boolean> {
+    return this.httpClient.get(
+      this.endpoints.removeOrderbyIdUrl(id),
+      {observe: "response"}
+    ).pipe(
+      map(value => value.status === 200)
+    )
+  }
+
+  editOrderbyId(id: number, order: Order): Observable<Order> {
+    return this.httpClient.post(
+      this.endpoints.editOrderbyIdUrl(id),
+      order,
+      {observe: "response"}
+    ).pipe(
+      map(
+        response => response.body as Order
+      )
+    )
+  }
+
+  newOrder(order: Order): Observable<Order> {
+    return this.httpClient.post(
+      this.endpoints.newOrderUrl(),
+      order,
+      {observe: "response"}
+    ).pipe(
+      map(
+        response => response.body as Order
+      )
+    )
   }
 
   verifyToken(): Observable<boolean> {

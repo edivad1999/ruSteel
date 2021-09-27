@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import kotlinx.coroutines.launch
-import model.dao.Processes
+import model.dao.Process
 import model.dao.UserAuth
 import model.tables.InternalOrdersTable
 import model.tables.OrdersTable
@@ -21,6 +21,7 @@ import org.kodein.di.instance
 import org.kodein.di.ktor.DIFeature
 import org.kodein.di.ktor.di
 import routes.auth.*
+import routes.orderApi
 
 
 fun Application.managerModule() {
@@ -69,7 +70,7 @@ fun Application.managerModule() {
         route("api") {
             loginApi()
             verifierJWTApi()
-
+            orderApi()
         }
     }
 
@@ -101,9 +102,9 @@ fun Application.initDb() = launch {
             "Outsourcing",
             "Imballaggio")
 
-        if (Processes.count().toInt() == 0) {
+        if (Process.count().toInt() == 0) {
             baseProcesses.forEach {
-                Processes.new {
+                Process.new {
                     process = it
                 }
             }

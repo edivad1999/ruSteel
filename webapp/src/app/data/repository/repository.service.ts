@@ -1,16 +1,7 @@
 import {Injectable} from '@angular/core';
 import {DatasourceService} from '../../core/datasource/datasource.service';
 import {Observable, of, ReplaySubject} from 'rxjs';
-import {
-  AuthState,
-  BlobWrapper,
-  EmailSetting,
-  EpilationTable,
-  LogEntry,
-  MdsTreatParamFavorite, MdsTreatParamFavoriteRequest,
-  MdsTreatParamFavoriteResponse,
-  SystemStatus
-} from '../../domain/model/data';
+import {AuthState, Order} from '../../domain/model/data';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthTokenData} from '../requests';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
@@ -48,6 +39,30 @@ export class RepositoryService {
         this.authenticationStateFlow.next('UNAUTHENTICATED');
       }),
     );
+  }
+
+  getOrderById(id: number): Observable<Order> {
+    return this.datasource.getOrderById(id)
+  }
+
+  getAllOrders(): Observable<Order[]> {
+    return this.datasource.getAllOrders()
+
+  }
+
+  removeOrderbyId(id: number): Observable<boolean> {
+    return this.datasource.removeOrderbyId(id)
+
+  }
+
+  editOrderbyId(id: number, order: Order): Observable<Order> {
+    return this.datasource.editOrderbyId(id, order)
+
+  }
+
+  newOrder(order: Order): Observable<Order> {
+    return this.datasource.newOrder(order)
+
   }
 
 
