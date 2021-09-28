@@ -31,6 +31,8 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { HomeComponent } from './components/home/home.component';
 import { OrdersComponent } from './components/orders/orders.component';
+import { NewOrderComponent } from './components/orders/new-order/new-order.component';
+import {MatStepperModule} from "@angular/material/stepper";
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { OrdersComponent } from './components/orders/orders.component';
     LogoutComponent,
     HomeComponent,
     OrdersComponent,
+    NewOrderComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +68,8 @@ import { OrdersComponent } from './components/orders/orders.component';
     MatProgressBarModule,
     CentralColumnModule,
     MatExpansionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatStepperModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {

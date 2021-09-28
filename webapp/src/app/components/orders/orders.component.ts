@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Order} from "../../domain/model/data";
 import {SubscriberContextComponent} from "../../utils/subscriber-context.component";
 import {RepositoryService} from "../../data/repository/repository.service";
-import {MatTableDataSource} from "@angular/material/table";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-orders',
@@ -13,6 +13,7 @@ export class OrdersComponent extends SubscriberContextComponent implements OnIni
   orders?: Order[]
 
   constructor(
+    private router: Router,
     private repo: RepositoryService
   ) {
     super()
@@ -26,4 +27,7 @@ export class OrdersComponent extends SubscriberContextComponent implements OnIni
     )
   }
 
+  goToNewOrder() {
+    this.router.navigateByUrl('/orders/new')
+  }
 }

@@ -11,92 +11,14 @@ import model.dao.InternalOrder
 import model.dao.Order
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
+import routes.auth.Role
 
 fun Route.orderApi() = route("order") {
 
     val db: Database by instance()
-    get("id") {
-        val id = call.parameters["id"]!!.toInt()
-        val result = transaction(db) {
-            Order.findById(id)
-        }
-        if (result != null) {
-            call.respond(result.serialize())
-        } else {
-            call.respond(HttpStatusCode.BadRequest)
-        }
-
-    }
-    get("all") {
-        val result = transaction(db) {
-            Order.all().map {
-                it.serialize()
-            }
-        }
-        call.respond(result)
-
-    }
-    get("remove") {
-        val id = call.parameters["id"]!!.toInt()
-        val result = transaction(db) {
-
-            val order = Order.findById(id)
-            if (order !== null) {
-                order.delete()
-                order.getInternalOrders().forEach { it.delete() }
-            }
-            order != null
-
-        }
-        call.respond(if (result) HttpStatusCode.OK else HttpStatusCode.BadRequest)
-
-    }
-    post("edit") {
-        val request = call.receive<SerializableOrder>()
-        val id = call.parameters["id"]!!.toInt()
-        transaction(db) {
-            var result = false
-
-
-            val order = Order.findById(id)!!
-
-            order.product = request.product
-            order.requestedDate = request.requestedDate
-            order.requestedQuantity = request.requestedQuantity
-            order.commission = request.commission
-            order.client = request.client
-            order.clientOrderCode = request.clientOrderCode
-            order.startDate = request.startDate
-            order.endDate = request.endDate
-            order.expectedEndDate = request.expectedEndDate
-            request.internalOrders.forEach {
-                val internalOrder = InternalOrder.findById(it.id)
-                if (internalOrder != null) {
-                    internalOrder.productCode = it.productCode
-                    internalOrder.productQuantity = it.productQuantity
-                    internalOrder.rawCode = it.rawCode
-                    internalOrder.rawQuantity = it.rawQuantity
-                    internalOrder.operator = it.operator
-                    internalOrder.externalTreatments = it.externalTreatments
-                    internalOrder.orderPrincipal = order.id.value
-                    internalOrder.setProcesses(it.processes)
-                } else {
-                    InternalOrder.new {
-                        productCode = it.productCode
-                        productQuantity = it.productQuantity
-                        rawCode = it.rawCode
-                        rawQuantity = it.rawQuantity
-                        operator = it.operator
-                        externalTreatments = it.externalTreatments
-                        orderPrincipal = order.id.value
-                        setProcesses(it.processes)
-                    }
-                }
-
-            }
-            result = true
-            result
-        }.let {
+    authenticate(Role.USER) {
+        get("id") {
+            val id = call.parameters["id"]!!.toInt()
             val result = transaction(db) {
                 Order.findById(id)
             }
@@ -106,47 +28,128 @@ fun Route.orderApi() = route("order") {
                 call.respond(HttpStatusCode.BadRequest)
             }
 
-
         }
-    }
-    get("new") {
-        val request = call.receive<SerializableOrder>()
-
-        transaction(db) {
-            val newOrder = Order.new {
-                product = request.product
-                requestedDate = request.requestedDate
-                requestedQuantity = request.requestedQuantity
-                commission = request.commission
-                client = request.client
-                clientOrderCode = request.clientOrderCode
-                startDate = request.startDate
-                endDate = request.endDate
-                expectedEndDate = request.expectedEndDate
-            }
-            request.internalOrders.forEach {
-                InternalOrder.new {
-                    productCode = it.productCode
-                    productQuantity = it.productQuantity
-                    rawCode = it.rawCode
-                    rawQuantity = it.rawQuantity
-                    operator = it.operator
-                    externalTreatments = it.externalTreatments
-                    orderPrincipal = newOrder.id.value
-                    setProcesses(it.processes)
+        get("all") {
+            val result = transaction(db) {
+                Order.all().map {
+                    it.serialize()
                 }
             }
-            newOrder.id
-        }.let {
-            val result = transaction(db) {
-                Order.findById(it.value)
-            }
-            if (result != null) {
-                call.respond(result.serialize())
-            } else {
-                call.respond(HttpStatusCode.BadRequest)
-            }
+            call.respond(result)
 
+        }
+        get("remove") {
+            val id = call.parameters["id"]!!.toInt()
+            val result = transaction(db) {
+
+                val order = Order.findById(id)
+                if (order !== null) {
+                    order.delete()
+                    order.getInternalOrders().forEach { it.delete() }
+                }
+                order != null
+
+            }
+            call.respond(if (result) HttpStatusCode.OK else HttpStatusCode.BadRequest)
+
+        }
+        post("edit") {
+            val request = call.receive<SerializableOrder>()
+            val id = call.parameters["id"]!!.toInt()
+            transaction(db) {
+                var result = false
+
+
+                val order = Order.findById(id)!!
+
+                order.product = request.product
+                order.requestedDate = request.requestedDate
+                order.requestedQuantity = request.requestedQuantity
+                order.commission = request.commission
+                order.client = request.client
+                order.clientOrderCode = request.clientOrderCode
+                order.startDate = request.startDate
+                order.endDate = request.endDate
+                order.expectedEndDate = request.expectedEndDate
+                request.internalOrders.forEach {
+                    val internalOrder = InternalOrder.findById(it.id)
+                    if (internalOrder != null) {
+                        internalOrder.productCode = it.productCode
+                        internalOrder.productQuantity = it.productQuantity
+                        internalOrder.rawCode = it.rawCode
+                        internalOrder.rawQuantity = it.rawQuantity
+                        internalOrder.operator = it.operator
+                        internalOrder.externalTreatments = it.externalTreatments
+                        internalOrder.orderPrincipal = order.id.value
+                        internalOrder.setProcesses(it.processes)
+                    } else {
+                        InternalOrder.new {
+                            productCode = it.productCode
+                            productQuantity = it.productQuantity
+                            rawCode = it.rawCode
+                            rawQuantity = it.rawQuantity
+                            operator = it.operator
+                            externalTreatments = it.externalTreatments
+                            orderPrincipal = order.id.value
+                            setProcesses(it.processes)
+                        }
+                    }
+
+                }
+                result = true
+                result
+            }.let {
+                val result = transaction(db) {
+                    Order.findById(id)
+                }
+                if (result != null) {
+                    call.respond(result.serialize())
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+
+
+            }
+        }
+        get("new") {
+            val request = call.receive<SerializableOrder>()
+
+            transaction(db) {
+                val newOrder = Order.new {
+                    product = request.product
+                    requestedDate = request.requestedDate
+                    requestedQuantity = request.requestedQuantity
+                    commission = request.commission
+                    client = request.client
+                    clientOrderCode = request.clientOrderCode
+                    startDate = request.startDate
+                    endDate = request.endDate
+                    expectedEndDate = request.expectedEndDate
+                }
+                request.internalOrders.forEach {
+                    InternalOrder.new {
+                        productCode = it.productCode
+                        productQuantity = it.productQuantity
+                        rawCode = it.rawCode
+                        rawQuantity = it.rawQuantity
+                        operator = it.operator
+                        externalTreatments = it.externalTreatments
+                        orderPrincipal = newOrder.id.value
+                        setProcesses(it.processes)
+                    }
+                }
+                newOrder.id
+            }.let {
+                val result = transaction(db) {
+                    Order.findById(it.value)
+                }
+                if (result != null) {
+                    call.respond(result.serialize())
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+
+            }
         }
     }
 }

@@ -1,0 +1,78 @@
+<lib-central-column>
+  <mat-stepper orientation="vertical">
+    <!--    Step general info-->
+    <mat-step [stepControl]="generalFormGroup" [completed]="generalFormGroup.valid">
+      <ng-template matStepLabel>Informazioni ordine</ng-template>
+      <div style="display: flex;flex-direction: column;" [formGroup]="generalFormGroup">
+        <mat-form-field>
+          <mat-label>Prodotto</mat-label>
+          <input matInput formControlName="product" required>
+          <mat-error>Il campo non può essere nullo</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Quantità richiesta</mat-label>
+          <input matInput type="number" formControlName="requestedQuantity" required>
+          <mat-error>Il campo non può essere nullo</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Codice commessa</mat-label>
+          <input matInput formControlName="commission" required>
+          <mat-error>Il campo non può essere nullo</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Cliente</mat-label>
+          <input matInput formControlName="client" required>
+          <mat-error>Il campo non può essere nullo</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Codice ordine del cliente</mat-label>
+          <input matInput formControlName="clientOrderCode" required>
+          <mat-error>Il campo non può essere nullo</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-button matStepperNext>Prossimo</button>
+      </div>
+    </mat-step>
+    <!--    Step dates-->
+    <mat-step [stepControl]="datesFormGroup">
+      <ng-template matStepLabel>Date di consegna</ng-template>
+
+      <div style="display: flex;flex-direction: column;" [formGroup]="datesFormGroup">
+
+        <mat-form-field>
+          <mat-label>Data richiesta</mat-label>
+          <input matInput formControlName="requestedDate" required>
+          <mat-error>Il campo non può essere nullo</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Data di inizio</mat-label>
+          <input matInput formControlName="startDate">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Data di fine prevista</mat-label>
+          <input matInput formControlName="expectedEndDate">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Data di fine</mat-label>
+          <input matInput formControlName="endDate">
+        </mat-form-field>
+
+      </div>
+
+    </mat-step>
+    <!--    step internals-->
+    <mat-step>
+      <ng-template matStepLabel>Prodotti Interni</ng-template>
+
+    </mat-step>
+
+  </mat-stepper>
+</lib-central-column>

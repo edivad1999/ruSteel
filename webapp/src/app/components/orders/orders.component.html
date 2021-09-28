@@ -1,43 +1,53 @@
 <div *ngIf="!orders" style="width:100% ">
   <mat-progress-bar mode="query"></mat-progress-bar>
 </div>
-<div *ngIf="orders">
-  <div *ngFor="let order of orders">
-    <mat-card>
-      <mat-card-title>
-        Prodotto: {{order.product}} | Quantità: {{order.requestedQuantity}}
-      </mat-card-title>
-      <mat-card-content>
-        <div>
-          Cliente: {{order.client}} | Numero ordine cliente:{{order.clientOrderCode}} | Commessa:{{order.commission}}
-        </div>
-        <div style="display: grid; grid-template-columns: 25px auto">
+<lib-central-column *ngIf="orders">
+  <div *ngIf="orders.length>0">
+    <div *ngFor="let order of orders">
+      <mat-card>
+        <mat-card-title>
+          Prodotto: {{order.product}} | Quantità: {{order.requestedQuantity}}
+        </mat-card-title>
+        <mat-card-content>
           <div>
-            <mat-icon>event</mat-icon>
+            Cliente: {{order.client}} | Numero ordine cliente:{{order.clientOrderCode}} | Commessa:{{order.commission}}
           </div>
-          <div style="display: flex;flex-direction: column;width: 100%">
-            <div>Richiesta: {{order.requestedDate}}</div>
-            <div>Data di inizio: {{order.startDate}}</div>
-            <div>Data di fine stimata: {{order.expectedEndDate}}</div>
-            <div>Data di fine: {{order.endDate}}</div>
+          <div style="display: grid; grid-template-columns: 25px auto">
+            <div>
+              <mat-icon>event</mat-icon>
+            </div>
+            <div style="display: flex;flex-direction: column;width: 100%">
+              <div>Richiesta: {{order.requestedDate}}</div>
+              <div>Data di inizio: {{order.startDate}}</div>
+              <div>Data di fine stimata: {{order.expectedEndDate}}</div>
+              <div>Data di fine: {{order.endDate}}</div>
+            </div>
           </div>
-        </div>
-        <mat-list>
-          <div *ngFor="let internal of order.internalOrders">
-            <mat-list-item>
-              Prodotto:{{internal.productCode}} x {{internal.productQuantity}}<br>
-              Grezzo:{{internal.rawCode}} x {{internal.rawQuantity}}<br>
-              Lavorazioni: {{internal.processes.join("-> ")}}<br>
-              Lavorazioni esterne: {{internal.externalTreatments}}
-              Operatore:{{internal.operator}}
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </div>
-        </mat-list>
+          <mat-list>
+            <div *ngFor="let internal of order.internalOrders">
+              <mat-list-item>
+                Prodotto:{{internal.productCode}} x {{internal.productQuantity}}<br>
+                Grezzo:{{internal.rawCode}} x {{internal.rawQuantity}}<br>
+                Lavorazioni: {{internal.processes.join("-> ")}}<br>
+                Lavorazioni esterne: {{internal.externalTreatments}}
+                Operatore:{{internal.operator}}
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            </div>
+          </mat-list>
 
-      </mat-card-content>
-    </mat-card>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
 
   </div>
-
-</div>
+  <div *ngIf="orders.length===0">
+    Non ci sono ordini salvati
+  </div>
+  <div>
+    <button mat-raised-button (click)="goToNewOrder()" color="primary">
+      Crea nuovo ordine
+    </button>
+  </div>
+</lib-central-column>

@@ -4,11 +4,13 @@ import {LoginComponent} from './login/login.component';
 import {AuthGuard, UnauthGuard} from './utils/guards';
 import {HomeComponent} from './components/home/home.component';
 import {LogoutComponent} from './logout/logout.component';
+import {NewOrderComponent} from "./components/orders/new-order/new-order.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent, canActivate: [UnauthGuard]},
   {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard]},
+  {path: 'orders/new', component: NewOrderComponent, canActivate: [AuthGuard]},
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
 
 
