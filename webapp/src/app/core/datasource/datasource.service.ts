@@ -78,6 +78,15 @@ export class DatasourceService {
     )
   }
 
+  getAllProcesses(): Observable<string[]>{
+    return this.httpClient.get(
+      this.endpoints.getAllProcessesUrl(),
+      {observe:"response"}
+    ).pipe(
+      map(value => value.body as string[])
+    )
+  }
+
   verifyToken(): Observable<boolean> {
     return this.httpClient.get<string>(this.endpoints.verifyTokenUrl(), {observe: 'response'}).pipe(
       map((response) => response.status === 200),

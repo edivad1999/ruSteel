@@ -65,6 +65,9 @@ export class RepositoryService {
 
   }
 
+  getAllProcesses(): Observable<string[]> {
+    return this.datasource.getAllProcesses()
+  }
 
   private handleLoginFlow(flow: Observable<AuthTokenData>): Observable<boolean> {
     this.authenticationStateFlow.next('AUTHENTICATING');

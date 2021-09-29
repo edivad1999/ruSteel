@@ -43,6 +43,10 @@ export class Endpoints {
   newOrderUrl() {
     return this.buildUrl(`order/new`);
   }
+  getAllProcessesUrl(){
+    return this.buildUrl(`process/all`);
+
+  }
 
 
   protected buildUrl(finalPath: string, type: 'ws' | 'http' = 'http'): string {

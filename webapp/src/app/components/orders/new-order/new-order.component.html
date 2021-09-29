@@ -1,78 +1,174 @@
-<lib-central-column>
-  <mat-stepper orientation="vertical">
-    <!--    Step general info-->
-    <mat-step [stepControl]="generalFormGroup" [completed]="generalFormGroup.valid">
-      <ng-template matStepLabel>Informazioni ordine</ng-template>
-      <div style="display: flex;flex-direction: column;" [formGroup]="generalFormGroup">
-        <mat-form-field>
-          <mat-label>Prodotto</mat-label>
-          <input matInput formControlName="product" required>
-          <mat-error>Il campo non può essere nullo</mat-error>
-        </mat-form-field>
+<div style="width: 100%;display:flex; justify-content: center ">
+  <div style="width:75%;">
+    <mat-stepper orientation="vertical">
+      <!--    Step general info-->
+      <mat-step [stepControl]="generalFormGroup" [completed]="generalFormGroup.valid">
+        <ng-template matStepLabel>Informazioni ordine</ng-template>
+        <div style="display: flex;flex-direction: column;" [formGroup]="generalFormGroup">
+          <mat-form-field>
+            <mat-label>Prodotto</mat-label>
+            <input matInput formControlName="product" required>
+            <mat-error>Il campo non può essere nullo</mat-error>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Quantità richiesta</mat-label>
-          <input matInput type="number" formControlName="requestedQuantity" required>
-          <mat-error>Il campo non può essere nullo</mat-error>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Quantità richiesta</mat-label>
+            <input matInput type="number" formControlName="requestedQuantity" required>
+            <mat-error>Il campo non può essere nullo</mat-error>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Codice commessa</mat-label>
-          <input matInput formControlName="commission" required>
-          <mat-error>Il campo non può essere nullo</mat-error>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Codice commessa</mat-label>
+            <input matInput formControlName="commission" required>
+            <mat-error>Il campo non può essere nullo</mat-error>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Cliente</mat-label>
-          <input matInput formControlName="client" required>
-          <mat-error>Il campo non può essere nullo</mat-error>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Cliente</mat-label>
+            <input matInput formControlName="client" required>
+            <mat-error>Il campo non può essere nullo</mat-error>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Codice ordine del cliente</mat-label>
-          <input matInput formControlName="clientOrderCode" required>
-          <mat-error>Il campo non può essere nullo</mat-error>
-        </mat-form-field>
-      </div>
-      <div>
-        <button mat-button matStepperNext>Prossimo</button>
-      </div>
-    </mat-step>
-    <!--    Step dates-->
-    <mat-step [stepControl]="datesFormGroup">
-      <ng-template matStepLabel>Date di consegna</ng-template>
+          <mat-form-field>
+            <mat-label>Codice ordine del cliente</mat-label>
+            <input matInput formControlName="clientOrderCode" required>
+            <mat-error>Il campo non può essere nullo</mat-error>
+          </mat-form-field>
+        </div>
 
-      <div style="display: flex;flex-direction: column;" [formGroup]="datesFormGroup">
+      </mat-step>
+      <!--    Step dates-->
+      <mat-step [stepControl]="datesFormGroup">
+        <ng-template matStepLabel>Date di consegna</ng-template>
 
-        <mat-form-field>
-          <mat-label>Data richiesta</mat-label>
-          <input matInput formControlName="requestedDate" required>
-          <mat-error>Il campo non può essere nullo</mat-error>
-        </mat-form-field>
+        <div style="display: flex;flex-direction: column;" [formGroup]="datesFormGroup">
 
-        <mat-form-field>
-          <mat-label>Data di inizio</mat-label>
-          <input matInput formControlName="startDate">
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Data richiesta</mat-label>
+            <input matInput formControlName="requestedDate" required type="date">
+            <mat-error>Il campo non può essere nullo</mat-error>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Data di fine prevista</mat-label>
-          <input matInput formControlName="expectedEndDate">
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Data di inizio</mat-label>
+            <input matInput formControlName="startDate" type="date">
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Data di fine</mat-label>
-          <input matInput formControlName="endDate">
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Data di fine prevista</mat-label>
+            <input matInput formControlName="expectedEndDate" type="date">
+          </mat-form-field>
 
-      </div>
+          <mat-form-field>
+            <mat-label>Data di fine</mat-label>
+            <input matInput formControlName="endDate" type="date">
+          </mat-form-field>
 
-    </mat-step>
-    <!--    step internals-->
-    <mat-step>
-      <ng-template matStepLabel>Prodotti Interni</ng-template>
+        </div>
 
-    </mat-step>
+      </mat-step>
+      <!--    step internals-->
+      <mat-step [stepControl]="internalOrdersFormArray">
+        <ng-template matStepLabel>Prodotti Interni</ng-template>
+        <div style="display: flex;flex-direction: column;">
+          <div style="display: flex; justify-content: flex-start  ">
+            <button color="accent" mat-raised-button (click)="addNewInternalOrder()">
+              Aggiungi nuovo prodotto intenrno
+            </button>
+          </div>
+          <div *ngIf=" internalOrdersFormArray.controls.length==0">
+            Non sono presenti prodotti interni
+          </div>
+          <div *ngIf=" internalOrdersFormArray.controls.length>0">
+            <mat-stepper orientation="vertical" color="accent" >
+              <div *ngFor="let internalControl of internalOrdersFormArray.controls; let internalIndex=index"
+                   [formGroup]="castToFormGroup(internalControl)">
+                <mat-step [stepControl]="castToFormGroup(internalControl)">
+                  <div>
+                    <mat-form-field style="margin-right: 18px">
+                      <mat-label>Codice prodotto interno</mat-label>
+                      <input matInput formControlName="productCode">
+                      <mat-error>Il campo non può essere vuoto</mat-error>
+                    </mat-form-field>
 
-  </mat-stepper>
-</lib-central-column>
+                    <mat-form-field>
+                      <mat-label>Quantità prodotto interno</mat-label>
+                      <input matInput formControlName="productQuantity" type="number">
+                      <mat-error>Il campo non può essere vuoto</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field style="margin-right: 18px">
+                      <mat-label>Codice grezzo</mat-label>
+                      <input matInput formControlName="rawCode">
+                      <mat-error>Il campo non può essere vuoto</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                      <mat-label>Quantità grezzo</mat-label>
+                      <input matInput formControlName="rawQuantity" type="number">
+                      <mat-error>Il campo non può essere vuoto</mat-error>
+                    </mat-form-field>
+                  </div>
+
+                  <div>
+                    <mat-form-field style="margin-right: 18px">
+                      <mat-label>Operatore</mat-label>
+                      <input matInput formControlName="operator" type="number">
+                      <mat-error>Il campo non può essere vuoto</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                      <mat-label>Lavorazioni esterne</mat-label>
+                      <input matInput formControlName="externalTreatments" type="number">
+                      <mat-error>Il campo non può essere vuoto</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    Lavorazioni: <br>
+                    <div *ngIf="getInternalProcessesFormArray(internalControl).controls.length===0">
+                      Non ci sono lavorazioni
+                    </div>
+                    <div *ngIf="getInternalProcessesFormArray(internalControl).controls.length>0">
+                      <div style="display: flex">
+
+                    <span class="border"
+                          *ngFor="let process of getInternalProcessesFormArray(internalControl).controls; let i=index">
+                        {{process.value}}
+                      <button mat-icon-button color="warn" (click)="removeProcess(internalControl,i)"><mat-icon>remove</mat-icon></button>
+                    </span>
+
+                      </div>
+                    </div>
+                    <div>
+                      <mat-form-field>
+                        <mat-label>Inserisci la lavorazione</mat-label>
+                        <mat-select #select (selectionChange)="selectionChanged(internalControl,select)">
+                          <mat-option *ngFor="let process of processes" [value]="process">
+                            {{process}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div>
+                      <button mat-raised-button color="warn" (click)="removeInternal(internalIndex)">Rimuovi prodotto interno</button>
+
+                    </div>
+
+                  </div>
+                </mat-step>
+              </div>
+            </mat-stepper>
+          </div>
+
+        </div>
+      </mat-step>
+
+    </mat-stepper>
+    <div *ngIf="formGroupWrapper.valid">
+      <app-single-order [order]="composeOrder()"></app-single-order>
+
+    </div>
+
+  </div>
+</div>

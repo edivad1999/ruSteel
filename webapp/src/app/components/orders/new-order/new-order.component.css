@@ -1,0 +1,10 @@
+.border {
+  align-content: center;
+  border-color: #7a7a7a;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 15px;
+  padding: 6px 6px 6px 6px;
+  margin: 3px 3px 3px 3px;
+
+}

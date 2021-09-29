@@ -33,6 +33,7 @@ import { HomeComponent } from './components/home/home.component';
 import { OrdersComponent } from './components/orders/orders.component';
 import { NewOrderComponent } from './components/orders/new-order/new-order.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import { SingleOrderComponent } from './components/orders/single-order/single-order.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import {MatStepperModule} from "@angular/material/stepper";
     HomeComponent,
     OrdersComponent,
     NewOrderComponent,
+    SingleOrderComponent,
   ],
   imports: [
     BrowserModule,

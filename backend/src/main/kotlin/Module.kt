@@ -22,6 +22,7 @@ import org.kodein.di.ktor.DIFeature
 import org.kodein.di.ktor.di
 import routes.auth.*
 import routes.orderApi
+import routes.processesApi
 
 
 fun Application.managerModule() {
@@ -71,6 +72,7 @@ fun Application.managerModule() {
             loginApi()
             verifierJWTApi()
             orderApi()
+            processesApi()
         }
     }
 
