@@ -6,28 +6,33 @@
     <div>
       Cliente: {{order.client}} | Numero ordine cliente:{{order.clientOrderCode}} | Commessa:{{order.commission}}
     </div>
-    <div style="display: grid; grid-template-columns: 25px auto">
+    <div style="display: grid; grid-template-columns: 40px auto">
       <div>
         <mat-icon>event</mat-icon>
       </div>
       <div style="display: flex;flex-direction: column;width: 100%">
         <div>Richiesta: {{getOrderDate(order.requestedDate)}}</div>
-        <div>Data di inizio: {{getOrderDate(order.startDate)}}</div>
-        <div>Data di fine stimata: {{getOrderDate(order.expectedEndDate)}}</div>
-        <div>Data di fine: {{getOrderDate(order.endDate)}}</div>
+        <div>Data di inizio: {{order.startDate?getOrderDate(order.startDate): "Data non impostata"}}</div>
+        <div>Data di fine stimata: {{order.expectedEndDate?getOrderDate(order.expectedEndDate): "Data non impostata"}}</div>
+        <div>Data di fine: {{order.endDate?getOrderDate(order.endDate): "Data non impostata"}}</div>
       </div>
     </div>
-    <mat-list>
-      <div *ngFor="let internal of order.internalOrders">
-        <mat-list-item>
-          Prodotto:{{internal.productCode}} x {{internal.productQuantity}}<br>
-          Grezzo:{{internal.rawCode}} x {{internal.rawQuantity}}<br>
+    <div style="margin-top: 12px">
+      <div *ngFor="let internal of order.internalOrders" style="display: grid; grid-template-columns: 40px auto">
+        <div>
+          <mat-icon>inventory_2</mat-icon>
+        </div>
+        <div>
+          Prodotto:{{internal.productCode}} | quantità: {{internal.productQuantity}}<br>
+          Grezzo:{{internal.rawCode}} | quantità: {{internal.rawQuantity}}<br>
           Lavorazioni: {{internal.processes.join("-> ")}}<br>
-          Lavorazioni esterne: {{internal.externalTreatments}}
+          Lavorazioni esterne: {{internal.externalTreatments}}<br>
           Operatore:{{internal.operator}}
-        </mat-list-item>
+        </div>
       </div>
-    </mat-list>
-
+    </div>
+    <div *ngIf="fromList">
+      <button mat-raised-button color="accent" [routerLink]="getEditUrl(order.id) ">Modifica</button>
+    </div>
   </mat-card-content>
 </mat-card>

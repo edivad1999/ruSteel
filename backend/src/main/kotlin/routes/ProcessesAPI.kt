@@ -15,7 +15,7 @@ fun Route.processesApi() = route("process") {
     authenticate(Role.USER) {
         get("all") {
             val result = transaction(db) {
-                Process.all().map { it.process }
+                Process.all().map { it.process }.sorted()
             }
             call.respond(result)
         }

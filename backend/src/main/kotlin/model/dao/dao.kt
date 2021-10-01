@@ -28,16 +28,15 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
     )
 
     var product by OrdersTable.product
-    var requestedDate by OrdersTable.requestedDate
+    var requestedDate: Long by OrdersTable.requestedDate
     var requestedQuantity by OrdersTable.requestedQuantity
     var commission by OrdersTable.commission
     var client by OrdersTable.client
     var clientOrderCode by OrdersTable.clientOrderCode
-    var startDate by OrdersTable.startDate
-    var endDate by OrdersTable.endDate
-    var expectedEndDate by OrdersTable.expectedEndDate
-    private val internalOrders by InternalOrder referrersOn InternalOrdersTable.orderPrincipal
-    fun getInternalOrders() = internalOrders.toList()
+    var startDate: Long? by OrdersTable.startDate
+    var endDate: Long? by OrdersTable.endDate
+    var expectedEndDate: Long? by OrdersTable.expectedEndDate
+    val internalOrders by InternalOrder referrersOn InternalOrdersTable.orderPrincipal
 
 }
 
@@ -55,11 +54,18 @@ class InternalOrder(id: EntityID<Int>) : IntEntity(id) {
     var externalTreatments by InternalOrdersTable.externalTreatments
 
 
-    var orderPrincipal by InternalOrdersTable.orderPrincipal
+    var orderPrincipal: EntityID<Int> by InternalOrdersTable.orderPrincipal
 
-    fun getProcesses() = processes.replace("\\s".toRegex(), "").split(',')
+    fun getProcesses(): List<String> {
+        return processes?.replace("\\s".toRegex(), "")?.split(',') ?: emptyList<String>()
+    }
+
     fun setProcesses(proc: List<String>) {
-        processes = proc.joinToString(", ")
+        processes = if (proc.isNotEmpty()) {
+            proc.joinToString(", ")
+        } else {
+            null
+        }
     }
 }
 

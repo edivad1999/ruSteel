@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Order} from "../../../domain/model/data";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-single-order',
@@ -8,8 +9,9 @@ import {Order} from "../../../domain/model/data";
 })
 export class SingleOrderComponent implements OnInit {
   @Input() order!: Order
+  @Input() fromList!: Boolean
 
-  constructor() {
+  constructor(private router:Router) {
   }
 
   getOrderDate(instant: number) {
@@ -20,4 +22,7 @@ export class SingleOrderComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getEditUrl(id: number) {
+    return ("/orders/edit/"+id)
+  }
 }

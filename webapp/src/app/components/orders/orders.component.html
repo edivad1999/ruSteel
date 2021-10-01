@@ -2,9 +2,14 @@
   <mat-progress-bar mode="query"></mat-progress-bar>
 </div>
 <lib-central-column *ngIf="orders">
+  <div>
+    <button mat-raised-button (click)="goToNewOrder()" color="primary">
+      Crea nuovo ordine
+    </button>
+  </div>
   <div *ngIf="orders.length>0">
-    <div *ngFor="let order of orders">
-      <app-single-order [order]="order"></app-single-order>
+    <div *ngFor="let order of orders" style="margin-top: 6px">
+      <app-single-order [order]="order" [fromList]="true"></app-single-order>
     </div>
 
   </div>

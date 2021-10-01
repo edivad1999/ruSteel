@@ -20,10 +20,10 @@ fun Route.orderApi() = route("order") {
         get("id") {
             val id = call.parameters["id"]!!.toInt()
             val result = transaction(db) {
-                Order.findById(id)
+                Order.findById(id)?.serialize()
             }
             if (result != null) {
-                call.respond(result.serialize())
+                call.respond(result)
             } else {
                 call.respond(HttpStatusCode.BadRequest)
             }
@@ -45,7 +45,7 @@ fun Route.orderApi() = route("order") {
                 val order = Order.findById(id)
                 if (order !== null) {
                     order.delete()
-                    order.getInternalOrders().forEach { it.delete() }
+                    order.internalOrders.toList().forEach { it.delete() }
                 }
                 order != null
 
@@ -71,6 +71,7 @@ fun Route.orderApi() = route("order") {
                 order.startDate = request.startDate
                 order.endDate = request.endDate
                 order.expectedEndDate = request.expectedEndDate
+                order.internalOrders.toList().forEach { it.delete() }
                 request.internalOrders.forEach {
                     val internalOrder = InternalOrder.findById(it.id)
                     if (internalOrder != null) {
@@ -80,8 +81,8 @@ fun Route.orderApi() = route("order") {
                         internalOrder.rawQuantity = it.rawQuantity
                         internalOrder.operator = it.operator
                         internalOrder.externalTreatments = it.externalTreatments
-                        internalOrder.orderPrincipal = order.id.value
-                        internalOrder.setProcesses(it.processes)
+                        internalOrder.orderPrincipal = order.id
+                        internalOrder.setProcesses(it.processes ?: emptyList<String>())
                     } else {
                         InternalOrder.new {
                             productCode = it.productCode
@@ -90,8 +91,8 @@ fun Route.orderApi() = route("order") {
                             rawQuantity = it.rawQuantity
                             operator = it.operator
                             externalTreatments = it.externalTreatments
-                            orderPrincipal = order.id.value
-                            setProcesses(it.processes)
+                            orderPrincipal = order.id
+                            setProcesses(it.processes ?: emptyList<String>())
                         }
                     }
 
@@ -100,10 +101,10 @@ fun Route.orderApi() = route("order") {
                 result
             }.let {
                 val result = transaction(db) {
-                    Order.findById(id)
+                    Order.findById(id)?.serialize()
                 }
                 if (result != null) {
-                    call.respond(result.serialize())
+                    call.respond(result)
                 } else {
                     call.respond(HttpStatusCode.BadRequest)
                 }
@@ -111,7 +112,7 @@ fun Route.orderApi() = route("order") {
 
             }
         }
-        get("new") {
+        post("new") {
             val request = call.receive<SerializableOrder>()
 
             transaction(db) {
@@ -134,17 +135,17 @@ fun Route.orderApi() = route("order") {
                         rawQuantity = it.rawQuantity
                         operator = it.operator
                         externalTreatments = it.externalTreatments
-                        orderPrincipal = newOrder.id.value
-                        setProcesses(it.processes)
+                        orderPrincipal = newOrder.id
+                        setProcesses(it.processes ?: emptyList<String>())
                     }
                 }
                 newOrder.id
             }.let {
                 val result = transaction(db) {
-                    Order.findById(it.value)
+                    Order.findById(it.value)?.serialize()
                 }
                 if (result != null) {
-                    call.respond(result.serialize())
+                    call.respond(result)
                 } else {
                     call.respond(HttpStatusCode.BadRequest)
                 }
@@ -153,7 +154,7 @@ fun Route.orderApi() = route("order") {
         }
     }
 }
-//TODO make return new and edit the new id
+//TODO save in db the creation time of every order so just /new api
 
 fun Order.serialize(): SerializableOrder {
     return SerializableOrder(
@@ -167,9 +168,10 @@ fun Order.serialize(): SerializableOrder {
         startDate = this.startDate,
         endDate = this.endDate,
         expectedEndDate = this.expectedEndDate,
-        internalOrders = this.getInternalOrders().map { it.serialize() },
+        internalOrders = this.internalOrders.toList().map { it.serialize() },
     )
 }
+
 
 fun InternalOrder.serialize(): SerializableInternalOrder {
     return SerializableInternalOrder(
@@ -188,14 +190,14 @@ fun InternalOrder.serialize(): SerializableInternalOrder {
 data class SerializableOrder(
     val id: Int,
     val product: String,
-    val requestedDate: Int,
+    val requestedDate: Long,
     val requestedQuantity: Int,
     val commission: String,
     val client: String,
     val clientOrderCode: String,
-    val startDate: Int,
-    val endDate: Int,
-    val expectedEndDate: Int,
+    val startDate: Long? = null,
+    val endDate: Long? = null,
+    val expectedEndDate: Long? = null,
     val internalOrders: List<SerializableInternalOrder>,
 )
 
@@ -207,8 +209,8 @@ data class SerializableInternalOrder(
     val rawCode: String,
     val rawQuantity: Int,
     val operator: String,
-    val processes: List<String>,
-    val externalTreatments: String,
+    val processes: List<String>? = emptyList<String>(),
+    val externalTreatments: String?=null,
 
 
     )

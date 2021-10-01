@@ -80,7 +80,7 @@
             Non sono presenti prodotti interni
           </div>
           <div *ngIf=" internalOrdersFormArray.controls.length>0">
-            <mat-stepper orientation="vertical" color="accent" >
+            <mat-stepper orientation="vertical" color="accent">
               <div *ngFor="let internalControl of internalOrdersFormArray.controls; let internalIndex=index"
                    [formGroup]="castToFormGroup(internalControl)">
                 <mat-step [stepControl]="castToFormGroup(internalControl)">
@@ -114,13 +114,13 @@
                   <div>
                     <mat-form-field style="margin-right: 18px">
                       <mat-label>Operatore</mat-label>
-                      <input matInput formControlName="operator" type="number">
+                      <input matInput formControlName="operator">
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
 
                     <mat-form-field>
                       <mat-label>Lavorazioni esterne</mat-label>
-                      <input matInput formControlName="externalTreatments" type="number">
+                      <input matInput formControlName="externalTreatments">
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
                   </div>
@@ -165,8 +165,17 @@
       </mat-step>
 
     </mat-stepper>
-    <div *ngIf="formGroupWrapper.valid">
-      <app-single-order [order]="composeOrder()"></app-single-order>
+    <div *ngIf="formGroupWrapper.valid" style="margin-top: 12px">
+      <app-single-order [order]="composeOrder()" [fromList]="false"></app-single-order>
+      <div *ngIf="!editOrder">
+        <button mat-raised-button color="primary" (click)="saveOrder(composeOrder())">Salva l'ordine</button>
+      </div>
+      <div *ngIf="editOrder">
+        <button mat-raised-button color="primary" (click)="modifyOrder(composeOrder())">Modifica l'ordine</button>
+      </div>
+    </div>
+    <div *ngIf="!formGroupWrapper.valid"style="margin-top: 12px">
+      <mat-card> Compila correttamente il form per salvarlo</mat-card>
 
     </div>
 
