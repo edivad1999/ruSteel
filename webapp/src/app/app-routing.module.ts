@@ -7,7 +7,7 @@ import {LogoutComponent} from './logout/logout.component';
 import {NewOrderComponent} from "./components/orders/new-order/new-order.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'login', pathMatch: 'full'},
+  {path: '', redirectTo: 'login', pathMatch: 'prefix'},
   {path: 'login', component: LoginComponent, canActivate: [UnauthGuard]},
   {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard]},
   {path: 'orders/new', component: NewOrderComponent, canActivate: [AuthGuard]},

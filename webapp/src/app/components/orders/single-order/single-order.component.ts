@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Order} from "../../../domain/model/data";
 import {Router} from "@angular/router";
 
@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 export class SingleOrderComponent implements OnInit {
   @Input() order!: Order
   @Input() fromList!: Boolean
-
+  @Output() deleteId:EventEmitter<number>=new EventEmitter<number>()
   constructor(private router:Router) {
   }
 

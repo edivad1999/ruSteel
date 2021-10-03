@@ -36,6 +36,7 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
     var startDate: Long? by OrdersTable.startDate
     var endDate: Long? by OrdersTable.endDate
     var expectedEndDate: Long? by OrdersTable.expectedEndDate
+    var creationTime: Long by OrdersTable.creationTime
     val internalOrders by InternalOrder referrersOn InternalOrdersTable.orderPrincipal
 
 }

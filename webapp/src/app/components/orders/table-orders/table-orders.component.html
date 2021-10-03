@@ -1,0 +1,35 @@
+<mat-table [dataSource]="datasource" class="mat-elevation-z8" #table>
+  <span *ngFor="let column of displayedColumns">
+  <ng-container matColumnDef="{{column}}">
+    <mat-header-cell *matHeaderCellDef> {{column}}</mat-header-cell>
+<!--    insert translation function-->
+    <mat-cell *matCellDef="let element">
+      <span *ngIf="column==='processes'">
+        <span *ngFor="let process of element[column]">
+          {{process}}<br>
+        </span>
+      </span>
+      <span *ngIf="column==='requestedDate' ||column==='startDate' ||column==='endDate' ||column==='expectedEndDate'">
+       {{element[column]?getOrderDate(element[column]): ""}}
+      </span>
+      <span *ngIf="column==='azioni'">
+        <span *ngIf="element['id']">
+          <button mat-icon-button  color="warn" (click)="deleteById(element['id'],table)"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button color="accent" [routerLink]="getEditUrl(element['id'])"><mat-icon>edit</mat-icon></button>
+        </span>
+
+      </span>
+      <span *ngIf="column!=='processes' && column!=='requestedDate'&&
+       column!=='startDate'&& column!=='endDate'&& column!=='expectedEndDate' && column!=='azioni'">
+         {{element[column]}}
+      </span>
+
+
+
+    </mat-cell>
+  </ng-container>
+  </span>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

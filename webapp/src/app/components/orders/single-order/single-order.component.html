@@ -12,9 +12,9 @@
       </div>
       <div style="display: flex;flex-direction: column;width: 100%">
         <div>Richiesta: {{getOrderDate(order.requestedDate)}}</div>
-        <div>Data di inizio: {{order.startDate?getOrderDate(order.startDate): "Data non impostata"}}</div>
-        <div>Data di fine stimata: {{order.expectedEndDate?getOrderDate(order.expectedEndDate): "Data non impostata"}}</div>
-        <div>Data di fine: {{order.endDate?getOrderDate(order.endDate): "Data non impostata"}}</div>
+        <div>Data di inizio: {{order.startDate ? getOrderDate(order.startDate) : "Data non impostata"}}</div>
+        <div>Data di fine stimata: {{order.expectedEndDate ? getOrderDate(order.expectedEndDate) : "Data non impostata"}}</div>
+        <div>Data di fine: {{order.endDate ? getOrderDate(order.endDate) : "Data non impostata"}}</div>
       </div>
     </div>
     <div style="margin-top: 12px">
@@ -31,8 +31,14 @@
         </div>
       </div>
     </div>
-    <div *ngIf="fromList">
-      <button mat-raised-button color="accent" [routerLink]="getEditUrl(order.id) ">Modifica</button>
+    <div *ngIf="fromList" style="display: flex; width: 100%; justify-content: space-between">
+      <div>
+        <button mat-raised-button color="warn" (click)="deleteId.emit(order.id)">Elimina</button>
+      </div>
+      <div>
+        <button mat-raised-button color="accent" [routerLink]="getEditUrl(order.id) ">Modifica</button>
+      </div>
+
     </div>
   </mat-card-content>
 </mat-card>

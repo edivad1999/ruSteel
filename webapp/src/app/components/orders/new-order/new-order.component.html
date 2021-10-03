@@ -171,12 +171,15 @@
         <button mat-raised-button color="primary" (click)="saveOrder(composeOrder())">Salva l'ordine</button>
       </div>
       <div *ngIf="editOrder">
+        <button mat-raised-button color="warn" (click)="deleteById(editOrder!.id)">Elimina l'ordine</button>
         <button mat-raised-button color="primary" (click)="modifyOrder(composeOrder())">Modifica l'ordine</button>
       </div>
     </div>
     <div *ngIf="!formGroupWrapper.valid"style="margin-top: 12px">
       <mat-card> Compila correttamente il form per salvarlo</mat-card>
-
+      <div *ngIf="editOrder">
+        <button mat-raised-button color="warn" (click)="deleteById(editOrder!.id)">Elimina l'ordine</button>
+      </div>
     </div>
 
   </div>

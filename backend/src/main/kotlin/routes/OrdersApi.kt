@@ -31,7 +31,7 @@ fun Route.orderApi() = route("order") {
         }
         get("all") {
             val result = transaction(db) {
-                Order.all().map {
+                Order.all().sortedBy { order: Order -> order.creationTime }.map {
                     it.serialize()
                 }
             }
@@ -44,8 +44,9 @@ fun Route.orderApi() = route("order") {
 
                 val order = Order.findById(id)
                 if (order !== null) {
-                    order.delete()
                     order.internalOrders.toList().forEach { it.delete() }
+                    order.delete()
+
                 }
                 order != null
 
@@ -126,6 +127,8 @@ fun Route.orderApi() = route("order") {
                     startDate = request.startDate
                     endDate = request.endDate
                     expectedEndDate = request.expectedEndDate
+                    creationTime = System.currentTimeMillis()
+
                 }
                 request.internalOrders.forEach {
                     InternalOrder.new {
@@ -210,7 +213,7 @@ data class SerializableInternalOrder(
     val rawQuantity: Int,
     val operator: String,
     val processes: List<String>? = emptyList<String>(),
-    val externalTreatments: String?=null,
+    val externalTreatments: String? = null,
 
 
     )

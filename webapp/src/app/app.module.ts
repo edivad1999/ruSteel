@@ -26,14 +26,15 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {CentralColumnModule} from './utils/central-column/central-column.module';
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import { HomeComponent } from './components/home/home.component';
-import { OrdersComponent } from './components/orders/orders.component';
-import { NewOrderComponent } from './components/orders/new-order/new-order.component';
+import {HomeComponent} from './components/home/home.component';
+import {OrdersComponent} from './components/orders/orders.component';
+import {NewOrderComponent} from './components/orders/new-order/new-order.component';
 import {MatStepperModule} from "@angular/material/stepper";
-import { SingleOrderComponent } from './components/orders/single-order/single-order.component';
+import {SingleOrderComponent} from './components/orders/single-order/single-order.component';
+import {MatTabsModule} from "@angular/material/tabs";
+import {TableOrdersComponent} from './components/orders/table-orders/table-orders.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { SingleOrderComponent } from './components/orders/single-order/single-or
     OrdersComponent,
     NewOrderComponent,
     SingleOrderComponent,
+    TableOrdersComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,13 +73,11 @@ import { SingleOrderComponent } from './components/orders/single-order/single-or
     CentralColumnModule,
     MatExpansionModule,
     MatCheckboxModule,
-    MatStepperModule
+    MatStepperModule,
+    MatTabsModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-    {
-      provide: LocationStrategy,
-      useClass: HashLocationStrategy
-    }],
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

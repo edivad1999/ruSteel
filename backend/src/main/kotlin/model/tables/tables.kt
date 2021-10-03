@@ -20,6 +20,7 @@ object OrdersTable : IntIdTable("orders", columnName = "id") {
     val startDate = long("startDate").nullable()
     val endDate = long("endDate").nullable()
     val expectedEndDate = long("expectedEndDate").nullable()
+    val creationTime= long("creationTime")
 }
 
 object InternalOrdersTable : IntIdTable("internal-orders", columnName = "id") {

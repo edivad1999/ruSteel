@@ -1,24 +1,31 @@
-<div *ngIf="!orders" style="width:100% ">
+<div *ngIf="!orders || !processes" style="width:100% ">
   <mat-progress-bar mode="query"></mat-progress-bar>
 </div>
-<lib-central-column *ngIf="orders">
-  <div>
-    <button mat-raised-button (click)="goToNewOrder()" color="primary">
-      Crea nuovo ordine
-    </button>
-  </div>
-  <div *ngIf="orders.length>0">
-    <div *ngFor="let order of orders" style="margin-top: 6px">
-      <app-single-order [order]="order" [fromList]="true"></app-single-order>
-    </div>
+<mat-tab-group *ngIf="orders && processes">
+  <mat-tab label="Visualizzazione Lista">
+    <lib-central-column>
+      <div>
+        <button mat-raised-button (click)="goToNewOrder()" color="primary">
+          Crea nuovo ordine
+        </button>
+      </div>
+      <div *ngIf="orders.length>0">
+        <div *ngFor="let order of orders" style="margin-top: 6px">
+          <app-single-order [order]="order" (deleteId)="deleteById($event)" [fromList]="true"></app-single-order>
+        </div>
 
-  </div>
-  <div *ngIf="orders.length===0">
-    Non ci sono ordini salvati
-  </div>
-  <div>
-    <button mat-raised-button (click)="goToNewOrder()" color="primary">
-      Crea nuovo ordine
-    </button>
-  </div>
-</lib-central-column>
+      </div>
+      <div *ngIf="orders.length===0">
+        Non ci sono ordini salvati
+      </div>
+      <div>
+        <button mat-raised-button (click)="goToNewOrder()" color="primary">
+          Crea nuovo ordine
+        </button>
+      </div>
+    </lib-central-column>
+  </mat-tab>
+  <mat-tab label="Visualizzazione tabellare">
+    <app-table-orders [processes]="processes!" [orders]="orders" ></app-table-orders>
+  </mat-tab>
+</mat-tab-group>

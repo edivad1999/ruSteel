@@ -6,7 +6,7 @@ import {SubscriberContextComponent} from "../../../utils/subscriber-context.comp
 import {MatSelect} from "@angular/material/select";
 import {Order} from "../../../domain/model/data";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
 
 @Component({
@@ -65,6 +65,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   }
 
   constructor(
+    private router:Router,
     private route: ActivatedRoute,
     private snackbar: MatSnackBar,
     private repo: RepositoryService,
@@ -189,6 +190,18 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
         this.snackbar.open("Dati caricati correttamente", "chiudi")
       }
     })
+  }
+
+  deleteById(id: number,) {
+    this.subscribeWithContext(this.repo.removeOrderbyId(id), value => {
+        if (value) {
+          this.snackbar.open("Cancellato correttamente", "chiudi")
+          this.router.navigateByUrl('/home')
+        }
+
+      }
+    )
+
   }
 
   modifyOrder(order: Order) {
