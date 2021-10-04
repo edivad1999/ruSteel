@@ -39,9 +39,9 @@ object DIModules {
         }
     val database
         get() = DI.Module("database") {
-
+//            java.lang.System.getenv("database-url")?:
             bind<Database>() with singleton {
-                Database.connect("jdbc:postgresql://localhost:5438/postgres", driver = "org.postgresql.Driver",
+                Database.connect("jdbc:postgresql://${System.getenv("database-url")?:"localhost:5438/postgres"}", driver = "org.postgresql.Driver",
                 user = "postgres",password = "postgres")
             }
 

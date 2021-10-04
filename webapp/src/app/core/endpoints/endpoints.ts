@@ -5,15 +5,15 @@ import {DOCUMENT} from "@angular/common";
   providedIn: 'root'
 })
 export class Endpoints {
-  httpProtocol = 'http';
+  httpProtocol = 'https';
   wsProtocol = 'ws';
   hostname = 'localhost';
-  port = 42069;
+  port = 80;
   basePath = 'api';
 
   constructor(@Inject(DOCUMENT) private document: Document) {
 
-    this.hostname = document.location.hostname;
+    this.hostname = "rusteel.herokuapp.com"
   }
 
   verifyTokenUrl(): string {
