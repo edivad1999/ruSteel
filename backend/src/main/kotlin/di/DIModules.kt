@@ -44,7 +44,7 @@ object DIModules {
 //                user = "postgres",password = "postgres")
 //            }
                     bind<Database>() with singleton {
-                Database.connect(System.getenv("database-url"), driver = "org.postgresql.Driver",
+                Database.connect(System.getenv("DATABASE_URL"), driver = "org.postgresql.Driver",
                 user = "postgres",password = "postgres")
             }
 
