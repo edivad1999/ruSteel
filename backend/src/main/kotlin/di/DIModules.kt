@@ -44,10 +44,10 @@ object DIModules {
                 if (System.getenv("DATABASE_URL") != null) {
                     val dbUri = URI(System.getenv("DATABASE_URL"))
 
-                    val username: String = dbUri.userInfo.split(":").get(0)
+                    val username: String = dbUri.userInfo.split(":")[0]
                     val password: String = dbUri.userInfo.split(":")[1]
                     val dbUrl = "jdbc:postgresql://" + dbUri.host + ':' + dbUri.port + dbUri.path
-                    Database.connect(dbUrl, driver = "org.postgresql.Driver")
+                    Database.connect(dbUrl, driver = "org.postgresql.Driver",user=username, password=password)
 
 
                 } else {
