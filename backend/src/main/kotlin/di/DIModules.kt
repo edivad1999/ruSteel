@@ -12,6 +12,7 @@ import org.kodein.di.bind
 import org.kodein.di.instance
 import org.kodein.di.singleton
 import routes.auth.*
+import java.net.URI
 
 
 object DIModules {
@@ -40,10 +41,21 @@ object DIModules {
     val database
         get() = DI.Module("database") {
             bind<Database>() with singleton {
-                Database.connect("jdbc:${System.getenv("DATABASE_URL")?:"postgresql://localhost:5438/postgres"}", driver = "org.postgresql.Driver",
-                user = "postgres",password = "postgres")
-            }
+                if (System.getenv("DATABASE_URL") != null) {
+                    val dbUri = URI(System.getenv("DATABASE_URL"))
 
+                    val username: String = dbUri.userInfo.split(":").get(0)
+                    val password: String = dbUri.userInfo.split(":")[1]
+                    val dbUrl = "jdbc:postgresql://" + dbUri.host + ':' + dbUri.port + dbUri.path
+                    Database.connect(dbUrl, driver = "org.postgresql.Driver")
+
+
+                } else {
+                    Database.connect("jdbc:postgresql://localhost:5438/postgres", driver = "org.postgresql.Driver",
+                        user = "postgres", password = "postgres")
+                }
+
+            }
 
 
         }
