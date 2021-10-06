@@ -1,0 +1,16 @@
+<div style="display: flex; width: 100%; justify-content: center">
+<mat-card>
+  <mat-card-title>Backup e ripristino</mat-card-title>
+  Scarica un backup del database
+  <mat-card-actions align="end">
+    <button mat-raised-button color="primary" (click)="downloadBackup()">Scarica</button>
+  </mat-card-actions>
+  Ripristina il backup<br> <b>Seleziona un file compatibile con il sistema</b>
+  <mat-card-content>
+    <input #backupFileInput (change)="onBackUpFileSelected($event.target, backupFileInput)"
+           accept=".json" type="file">
+  </mat-card-content>
+</mat-card>
+
+
+</div>

@@ -3,9 +3,9 @@ import {Observable, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
 import {Endpoints} from '../endpoints/endpoints';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthTokenData} from '../../data/requests';
-import {Order} from "../../domain/model/data";
+import {Order, PasswordChangeRequest} from "../../domain/model/data";
 
 
 @Injectable({
@@ -78,10 +78,10 @@ export class DatasourceService {
     )
   }
 
-  getAllProcesses(): Observable<string[]>{
+  getAllProcesses(): Observable<string[]> {
     return this.httpClient.get(
       this.endpoints.getAllProcessesUrl(),
-      {observe:"response"}
+      {observe: "response"}
     ).pipe(
       map(value => value.body as string[])
     )
@@ -95,5 +95,44 @@ export class DatasourceService {
         return of(false);
       })
     );
+  }
+
+  uploadBackupDB(file: File) {
+    const r = new FormData();
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+    r.append(file.name, file, file.name);
+    return this.httpClient.post(
+      this.endpoints.uploadBackupDBUrl(),
+      r,
+      {
+        observe: 'response',
+        headers
+      }
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    );
+  }
+
+  changePassword(old: string, newp: string) {
+    const req: PasswordChangeRequest = {
+      old: old,
+      new: newp
+    }
+    return this.httpClient.post(
+      this.endpoints.changePasswordUrl(),
+      req,
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )
   }
 }

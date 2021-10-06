@@ -1,7 +1,7 @@
 <mat-table [dataSource]="datasource" class="mat-elevation-z8" #table>
   <span *ngFor="let column of displayedColumns">
   <ng-container matColumnDef="{{column}}">
-    <mat-header-cell *matHeaderCellDef> {{column}}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> {{convertColumnName(column)}}</mat-header-cell>
 <!--    insert translation function-->
     <mat-cell *matCellDef="let element">
       <span *ngIf="column==='processes'">

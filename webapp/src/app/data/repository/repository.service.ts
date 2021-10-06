@@ -88,4 +88,12 @@ export class RepositoryService {
       map(u => !!u)
     );
   }
+
+  uploadBackupDB(data: File): Observable<boolean> {
+    return this.datasource.uploadBackupDB(data);
+  }
+
+  changePassword(old: string, newp: string): Observable<boolean> {
+    return this.datasource.changePassword(old, newp)
+  }
 }

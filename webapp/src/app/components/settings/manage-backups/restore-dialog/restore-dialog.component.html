@@ -1,0 +1,33 @@
+<div *ngIf="restored===undefined && !isRestoring">
+  <p>Vuoi effettuare il ripristino del backup? <br>
+    Ricorda tutti i dati inseriti successivamente al backup verranno
+    eliminati, <b>procedere con cautela</b>
+  </p>
+  <div style="display: flex; justify-content: flex-end">
+    <button (click)="startRestore(false)" color="warn" mat-raised-button style="margin-right: 12px">
+      NON voglio fare il ripristino
+    </button>
+    <button (click)="startRestore(true)" color="primary" mat-raised-button>
+      Sono sicuro, procedi con il ripristino
+    </button>
+  </div>
+
+</div>
+<div *ngIf="restored===true && !isRestoring">
+  <p>
+    Il backup è stato ripristinato</p>
+  <div style="display: flex; justify-content: flex-end">
+    <button (click)="dialogRef.close()" mat-raised-button>Chiudi</button>
+  </div>
+</div>
+<div *ngIf="restored===false  && !isRestoring">
+  <p>
+    Ci sono stati problemi nel ripristino!</p>
+  <div style="display: flex; justify-content: flex-end">
+    <button (click)="dialogRef.close()" mat-raised-button>Chiudi</button>
+  </div>
+</div>
+<div *ngIf="isRestoring">
+  <p>Il sistema sta ripristinando i dati dal backup, non lasciare questa schermata!</p>
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</div>

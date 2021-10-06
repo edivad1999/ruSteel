@@ -26,6 +26,9 @@ export class AppComponent extends SubscriberContextComponent implements OnInit {
   displayedItems: ListItem[] = [
     {name: 'Login', url: '/login', needsAuthorization: false},
     {name: 'Home', url: '/home', needsAuthorization: true},
+    {name: 'Impostazioni', url: '/settings', needsAuthorization: true},
+    {name: 'Logout', url: '/logout', needsAuthorization: true},
+
   ];
   isLoadingBarShown = false;
 

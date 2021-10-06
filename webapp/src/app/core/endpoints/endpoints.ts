@@ -5,15 +5,19 @@ import {DOCUMENT} from "@angular/common";
   providedIn: 'root'
 })
 export class Endpoints {
-  httpProtocol = 'https';
+  httpProtocol = 'http';
   wsProtocol = 'ws';
   hostname = 'localhost';
-  port = 80;
+  port = 42069;
   basePath = 'api';
 
   constructor(@Inject(DOCUMENT) private document: Document) {
+    if(this.hostname!=="localhost"){
+      this.hostname = "rusteel.herokuapp.com"
+      this.httpProtocol='https'
 
-    this.hostname = "rusteel.herokuapp.com"
+    }
+
   }
 
   verifyTokenUrl(): string {
@@ -61,5 +65,13 @@ export class Endpoints {
     }
     url += finalPath;
     return url;
+  }
+
+  uploadBackupDBUrl() {
+    return this.buildUrl('backup/restore');
+  }
+
+  changePasswordUrl() {
+    return this.buildUrl('admin/changePassword');
   }
 }

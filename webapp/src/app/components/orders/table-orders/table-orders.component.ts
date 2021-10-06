@@ -69,7 +69,7 @@ export class TableOrdersComponent extends SubscriberContextComponent implements 
   }
 
   initDataStructure() {
-    this.orderTable=[]
+    this.orderTable = []
     for (const order of this.orders) {
       this.orderTable.push(
         {
@@ -125,7 +125,7 @@ export class TableOrdersComponent extends SubscriberContextComponent implements 
         }
       )
     }
-    this.datasource.data=this.orderTable
+    this.datasource.data = this.orderTable
   }
 
   ngOnInit(): void {
@@ -156,5 +156,58 @@ export class TableOrdersComponent extends SubscriberContextComponent implements 
         }
       )
     })
+  }
+
+  convertColumnName(column: string) {
+    if (column === 'product') {
+      return 'Prodotto'
+    } else if (column === 'requestedDate') {
+      return 'Data richiesta'
+
+    } else if (column === 'requestedQuantity') {
+      return 'Quantità richiesta'
+
+    } else if (column === 'productCode') {
+      return 'Codice interno'
+    } else if (column === 'productQuantity') {
+      return 'Quantità interno'
+
+    } else if (column === 'rawCode') {
+      return 'Codice grezzo'
+
+    } else if (column === 'rawQuantity') {
+      return 'Quantità grezzo'
+
+    } else if (column === 'operator') {
+      return 'Operatore'
+
+    } else if (column === 'processes') {
+      return 'Lavorazioni'
+
+    } else if (column === 'externalTreatments') {
+      return 'Lavorazioni Est'
+
+    } else if (column === 'commission') {
+      return 'Commessa'
+
+    } else if (column === 'client') {
+      return 'Cliente'
+
+    } else if (column === 'clientOrderCode') {
+      return 'Codice Cliente'
+
+    } else if (column === 'startDate') {
+      return 'D.Inizio'
+
+    } else if (column === 'endDate') {
+      return 'D.Fine'
+
+    } else if (column === 'expectedEndDate') {
+      return 'D.Fine stimata'
+
+    } else  {
+      return 'azioni'
+
+    }
   }
 }

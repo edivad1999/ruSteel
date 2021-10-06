@@ -35,6 +35,10 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {SingleOrderComponent} from './components/orders/single-order/single-order.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {TableOrdersComponent} from './components/orders/table-orders/table-orders.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import {ManageBackupsComponent} from "./components/settings/manage-backups/manage-backups.component";
+import {RestoreDialogComponent} from "./components/settings/manage-backups/restore-dialog/restore-dialog.component";
+import { ChangePasswordComponent } from './components/settings/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +50,10 @@ import {TableOrdersComponent} from './components/orders/table-orders/table-order
     NewOrderComponent,
     SingleOrderComponent,
     TableOrdersComponent,
+    SettingsComponent,
+    ManageBackupsComponent,
+    RestoreDialogComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
