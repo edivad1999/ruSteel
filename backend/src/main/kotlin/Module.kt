@@ -20,11 +20,8 @@ import org.kodein.di.direct
 import org.kodein.di.instance
 import org.kodein.di.ktor.DIFeature
 import org.kodein.di.ktor.di
+import routes.*
 import routes.auth.*
-import routes.backupApi
-import routes.orderApi
-import routes.processesApi
-import routes.userAdminApi
 
 
 fun Application.managerModule() {

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {DatasourceService} from '../../core/datasource/datasource.service';
 import {Observable, of, ReplaySubject} from 'rxjs';
-import {AuthState, Order} from '../../domain/model/data';
+import {AuthState, Completion, Order} from '../../domain/model/data';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthTokenData} from '../requests';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
@@ -95,5 +95,9 @@ export class RepositoryService {
 
   changePassword(old: string, newp: string): Observable<boolean> {
     return this.datasource.changePassword(old, newp)
+  }
+
+  getCompletion(): Observable<Completion> {
+    return this.datasource.getCompletion()
   }
 }

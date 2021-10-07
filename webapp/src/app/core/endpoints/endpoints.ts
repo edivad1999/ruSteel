@@ -12,9 +12,10 @@ export class Endpoints {
   basePath = 'api';
 
   constructor(@Inject(DOCUMENT) private document: Document) {
-    if(this.hostname!=="localhost"){
+    if (document.location.hostname !== "localhost") {
       this.hostname = "rusteel.herokuapp.com"
-      this.httpProtocol='https'
+      this.httpProtocol = 'https'
+      this.port=80
 
     }
 
@@ -47,7 +48,8 @@ export class Endpoints {
   newOrderUrl() {
     return this.buildUrl(`order/new`);
   }
-  getAllProcessesUrl(){
+
+  getAllProcessesUrl() {
     return this.buildUrl(`process/all`);
 
   }
@@ -73,5 +75,9 @@ export class Endpoints {
 
   changePasswordUrl() {
     return this.buildUrl('admin/changePassword');
+  }
+
+  getCompletionUrl() {
+    return this.buildUrl('completion/all');
   }
 }
