@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RepositoryService} from "../../../data/repository/repository.service";
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
 import {MatSelect} from "@angular/material/select";
@@ -29,9 +29,47 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
     productCodeColumn: [],
     rawCodeColumn: []
   }
+
   processes: string[] = []
   editOrder: Order | null = null
   internalOrdersFormArray = this.fb.array([], [Validators.required])
+
+  ngOnInit(): void {
+    this.subscribeWithContext(
+      this.route.paramMap.pipe(
+        map(m => m.get('id')),
+        map(id => {
+            if (id) {
+              this.subscribeWithContext(this.repo.getOrderById(+id), response => {
+                this.editOrder = response
+                this.setForm(response)
+              })
+            }
+          }
+        )
+      ))
+    this.subscribeWithContext(
+      this.repo.getAllProcesses(),
+      response => {
+        this.processes = response
+      }
+    )
+
+    this.subscribeWithContext(this.repo.getCompletion(), value => {
+      this.completion = value
+    })
+  }
+
+  getFilteredCompletion(control: FormControl, baseAssociatedCompletion: string[]): string[] {
+
+    return this._filter(control.value ? control.value : '', baseAssociatedCompletion)
+  }
+
+  private _filter(value: string, array: string[]): string[] {
+    const filterValue = value.toLowerCase();
+
+    return array.filter(option => option.toLowerCase().includes(filterValue));
+  }
 
   generalFormGroup = this.fb.group(
     {
@@ -116,37 +154,15 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
 
   }
 
+  getControlFromAbstract(a: AbstractControl | null) {
+    return a as FormControl
+  }
+
   convertToInputDateCompatible(date: Date): string {
 
     return date.toISOString().split('T')[0];
   }
 
-  ngOnInit(): void {
-    this.subscribeWithContext(
-      this.route.paramMap.pipe(
-        map(m => m.get('id')),
-        map(id => {
-            if (id) {
-              this.subscribeWithContext(this.repo.getOrderById(+id), response => {
-                this.editOrder = response
-                this.setForm(response)
-              })
-            }
-          }
-        )
-      ))
-    this.subscribeWithContext(
-      this.repo.getAllProcesses(),
-      response => {
-        this.processes = response
-      }
-    )
-
-    this.subscribeWithContext(this.repo.getCompletion(), value => {
-      this.completion = value
-      console.log(this.completion)
-    })
-  }
 
   castToFormGroup(internalControl: AbstractControl) {
     return internalControl as FormGroup

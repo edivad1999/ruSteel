@@ -10,7 +10,7 @@
             <input type="text" matInput formControlName="product" required
                    [matAutocomplete]="product">
             <mat-autocomplete autoActiveFirstOption #product="matAutocomplete">
-              <mat-option *ngFor="let option of completion.productColumn " [value]="option">
+              <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(this.generalFormGroup.get('product')),completion.productColumn) " [value]="option">
                 {{option}}
               </mat-option>
             </mat-autocomplete>
@@ -29,7 +29,7 @@
             <input matInput formControlName="commission" required
                    [matAutocomplete]="commission">
             <mat-autocomplete autoActiveFirstOption #commission="matAutocomplete">
-              <mat-option *ngFor="let option of completion.commissionColumn" [value]="option">
+              <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(this.generalFormGroup.get('commission')),completion.commissionColumn) " [value]="option">
                 {{option}}
               </mat-option>
             </mat-autocomplete>
@@ -41,7 +41,7 @@
             <input matInput formControlName="client" required
                    [matAutocomplete]="client">
             <mat-autocomplete autoActiveFirstOption #client="matAutocomplete">
-              <mat-option *ngFor="let option of completion.commissionColumn" [value]="option">
+              <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(this.generalFormGroup.get('client')),completion.clientColumn) " [value]="option">
                 {{option}}
               </mat-option>
             </mat-autocomplete>
@@ -53,7 +53,7 @@
             <input matInput formControlName="clientOrderCode" required
                    [matAutocomplete]="clientOrderCode">
             <mat-autocomplete autoActiveFirstOption #clientOrderCode="matAutocomplete">
-              <mat-option *ngFor="let option of completion.commissionColumn" [value]="option">
+              <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(this.generalFormGroup.get('clientOrderCode')),completion.clientOrderCodeColumn) " [value]="option">
                 {{option}}
               </mat-option>
             </mat-autocomplete>
@@ -112,7 +112,14 @@
                   <div>
                     <mat-form-field style="margin-right: 18px">
                       <mat-label>Codice prodotto interno</mat-label>
-                      <input matInput formControlName="productCode">
+                      <input matInput formControlName="productCode"
+                             [matAutocomplete]="internalCode">
+                      <mat-autocomplete autoActiveFirstOption #internalCode="matAutocomplete">
+                        <mat-option
+                          *ngFor=" let option of getFilteredCompletion(getControlFromAbstract(castToFormGroup(internalControl).get('productCode')),completion.productCodeColumn) " [value]="option">
+                          {{option}}
+                        </mat-option>
+                      </mat-autocomplete>
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
 
@@ -125,7 +132,12 @@
                   <div>
                     <mat-form-field style="margin-right: 18px">
                       <mat-label>Codice grezzo</mat-label>
-                      <input matInput formControlName="rawCode">
+                      <input matInput formControlName="rawCode" [matAutocomplete]="rawCode">
+                      <mat-autocomplete autoActiveFirstOption #rawCode="matAutocomplete">
+                        <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(castToFormGroup(internalControl).get('rawCode')),completion.rawCodeColumn) " [value]="option">
+                          {{option}}
+                        </mat-option>
+                      </mat-autocomplete>
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
 
@@ -139,13 +151,25 @@
                   <div>
                     <mat-form-field style="margin-right: 18px">
                       <mat-label>Operatore</mat-label>
-                      <input matInput formControlName="operator">
+                      <input matInput formControlName="operator" [matAutocomplete]="operatorCompletion">
+                      <mat-autocomplete autoActiveFirstOption #operatorCompletion="matAutocomplete">
+                        <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(castToFormGroup(internalControl).get('operator')),completion.operatorColumn) " [value]="option">
+                          {{option}}
+                        </mat-option>
+                      </mat-autocomplete>
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
 
                     <mat-form-field>
                       <mat-label>Lavorazioni esterne</mat-label>
-                      <input matInput formControlName="externalTreatments">
+                      <input matInput formControlName="externalTreatments" [matAutocomplete]="externalTreats">
+                      <mat-autocomplete autoActiveFirstOption #externalTreats="matAutocomplete">
+                        <mat-option
+                          *ngFor="let option of
+                          getFilteredCompletion(getControlFromAbstract(castToFormGroup(internalControl).get('externalTreatments')),completion.externalTreatmentsColumn) " [value]="option">
+                          {{option}}
+                        </mat-option>
+                      </mat-autocomplete>
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
                   </div>
