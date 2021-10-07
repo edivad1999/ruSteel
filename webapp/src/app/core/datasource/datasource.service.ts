@@ -5,7 +5,7 @@ import {JwtHandlerService} from '../../utils/jwt-handler.service';
 import {Endpoints} from '../endpoints/endpoints';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthTokenData} from '../../data/requests';
-import {Order, PasswordChangeRequest} from "../../domain/model/data";
+import {Completion, Order, PasswordChangeRequest} from "../../domain/model/data";
 
 
 @Injectable({
@@ -133,6 +133,13 @@ export class DatasourceService {
         console.error(err);
         return of(false);
       })
+    )
+  }
+
+  getCompletion(): Observable<Completion> {
+    return this.httpClient.get(this.endpoints.getCompletionUrl(), {observe: "response"}
+    ).pipe(
+      map(value => value.body as Completion)
     )
   }
 }

@@ -39,6 +39,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import {ManageBackupsComponent} from "./components/settings/manage-backups/manage-backups.component";
 import {RestoreDialogComponent} from "./components/settings/manage-backups/restore-dialog/restore-dialog.component";
 import { ChangePasswordComponent } from './components/settings/change-password/change-password.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -55,35 +56,36 @@ import { ChangePasswordComponent } from './components/settings/change-password/c
     RestoreDialogComponent,
     ChangePasswordComponent
   ],
-  imports: [
-    BrowserModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatSidenavModule,
-    HttpClientModule,
-    MatCardModule,
-    MatToolbarModule,
-    BrowserAnimationsModule,
-    MatListModule,
-    AppRoutingModule,
-    MatRippleModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatSnackBarModule,
-    MatInputModule,
-    MatDialogModule,
-    MatTableModule,
-    MatSortModule,
-    MatButtonToggleModule,
-    MatSlideToggleModule,
-    MatSelectModule,
-    MatProgressBarModule,
-    CentralColumnModule,
-    MatExpansionModule,
-    MatCheckboxModule,
-    MatStepperModule,
-    MatTabsModule
-  ],
+    imports: [
+        BrowserModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatSidenavModule,
+        HttpClientModule,
+        MatCardModule,
+        MatToolbarModule,
+        BrowserAnimationsModule,
+        MatListModule,
+        AppRoutingModule,
+        MatRippleModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatInputModule,
+        MatDialogModule,
+        MatTableModule,
+        MatSortModule,
+        MatButtonToggleModule,
+        MatSlideToggleModule,
+        MatSelectModule,
+        MatProgressBarModule,
+        CentralColumnModule,
+        MatExpansionModule,
+        MatCheckboxModule,
+        MatStepperModule,
+        MatTabsModule,
+        MatAutocompleteModule
+    ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]

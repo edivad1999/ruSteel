@@ -36,3 +36,14 @@ export interface PasswordChangeRequest {
   old: string,
   new: string
 }
+
+export interface Completion {
+  productColumn: string[]
+  commissionColumn: string[]
+  clientColumn: string[]
+  clientOrderCodeColumn: string[]
+  productCodeColumn: string[]
+  rawCodeColumn: string[]
+  operatorColumn: string[]
+  externalTreatmentsColumn: string[]
+}

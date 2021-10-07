@@ -4,7 +4,7 @@ import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@a
 import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
 import {MatSelect} from "@angular/material/select";
-import {Order} from "../../../domain/model/data";
+import {Completion, Order} from "../../../domain/model/data";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
@@ -19,6 +19,16 @@ import {map} from "rxjs/operators";
 })
 export class NewOrderComponent extends SubscriberContextComponent implements OnInit {
 
+  completion: Completion = {
+    productColumn: [],
+    commissionColumn: [],
+    clientOrderCodeColumn: [],
+    clientColumn: [],
+    externalTreatmentsColumn: [],
+    operatorColumn: [],
+    productCodeColumn: [],
+    rawCodeColumn: []
+  }
   processes: string[] = []
   editOrder: Order | null = null
   internalOrdersFormArray = this.fb.array([], [Validators.required])
@@ -65,7 +75,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   }
 
   constructor(
-    private router:Router,
+    private router: Router,
     private route: ActivatedRoute,
     private snackbar: MatSnackBar,
     private repo: RepositoryService,
@@ -131,6 +141,11 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
         this.processes = response
       }
     )
+
+    this.subscribeWithContext(this.repo.getCompletion(), value => {
+      this.completion = value
+      console.log(this.completion)
+    })
   }
 
   castToFormGroup(internalControl: AbstractControl) {

@@ -7,8 +7,15 @@
         <div style="display: flex;flex-direction: column;" [formGroup]="generalFormGroup">
           <mat-form-field>
             <mat-label>Prodotto</mat-label>
-            <input matInput formControlName="product" required>
+            <input type="text" matInput formControlName="product" required
+                   [matAutocomplete]="product">
+            <mat-autocomplete autoActiveFirstOption #product="matAutocomplete">
+              <mat-option *ngFor="let option of completion.productColumn " [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
             <mat-error>Il campo non può essere nullo</mat-error>
+
           </mat-form-field>
 
           <mat-form-field>
@@ -19,19 +26,37 @@
 
           <mat-form-field>
             <mat-label>Codice commessa</mat-label>
-            <input matInput formControlName="commission" required>
+            <input matInput formControlName="commission" required
+                   [matAutocomplete]="commission">
+            <mat-autocomplete autoActiveFirstOption #commission="matAutocomplete">
+              <mat-option *ngFor="let option of completion.commissionColumn" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
             <mat-error>Il campo non può essere nullo</mat-error>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Cliente</mat-label>
-            <input matInput formControlName="client" required>
+            <input matInput formControlName="client" required
+                   [matAutocomplete]="client">
+            <mat-autocomplete autoActiveFirstOption #client="matAutocomplete">
+              <mat-option *ngFor="let option of completion.commissionColumn" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
             <mat-error>Il campo non può essere nullo</mat-error>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Codice ordine del cliente</mat-label>
-            <input matInput formControlName="clientOrderCode" required>
+            <input matInput formControlName="clientOrderCode" required
+                   [matAutocomplete]="clientOrderCode">
+            <mat-autocomplete autoActiveFirstOption #clientOrderCode="matAutocomplete">
+              <mat-option *ngFor="let option of completion.commissionColumn" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
             <mat-error>Il campo non può essere nullo</mat-error>
           </mat-form-field>
         </div>
@@ -175,7 +200,7 @@
         <button mat-raised-button color="primary" (click)="modifyOrder(composeOrder())">Modifica l'ordine</button>
       </div>
     </div>
-    <div *ngIf="!formGroupWrapper.valid"style="margin-top: 12px">
+    <div *ngIf="!formGroupWrapper.valid" style="margin-top: 12px">
       <mat-card> Compila correttamente il form per salvarlo</mat-card>
       <div *ngIf="editOrder">
         <button mat-raised-button color="warn" (click)="deleteById(editOrder!.id)">Elimina l'ordine</button>
