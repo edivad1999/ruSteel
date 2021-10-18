@@ -69,6 +69,7 @@ dependencies {
     //kotlinx and mail and common serialization
     implementation("org.jetbrains.kotlinx", "kotlinx-html-jvm", kotlinxHTMLVersion)
     implementation("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinSerializationVersion)
+    implementation("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinSerializationVersion)
 
     //ktor
     api("io.ktor", "ktor-serialization", ktorVersion)
@@ -79,7 +80,8 @@ dependencies {
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
-
+    implementation ("com.google.zxing:core:3.4.1")
+    implementation("com.google.zxing:javase:3.4.1")
     //exposed DAO
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
@@ -90,7 +92,10 @@ dependencies {
 //    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     // DB Driver
     implementation("org.postgresql:postgresql:$postgresVersion")
+//pdf
+    implementation ("com.itextpdf:itext7-core:7.1.11")
 
+    implementation("id.jasoet:fun-pdf:1.0.3")
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinxCoroutinesVersion")
 

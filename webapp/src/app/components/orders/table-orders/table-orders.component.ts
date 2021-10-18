@@ -4,9 +4,10 @@ import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {RepositoryService} from "../../../data/repository/repository.service";
+import {saveAs} from "file-saver";
 
 export interface OrderTableRow {
-  id: number | null;
+  id: string | null;
   product: string | null;
   requestedDate: number | null;
   requestedQuantity: number | null;
@@ -86,12 +87,15 @@ export class TableOrdersComponent extends SubscriberContextComponent implements 
           externalTreatments: order.internalOrders[0].externalTreatments,
           processes: order.internalOrders[0].processes,
 
+          startDate: order.internalOrders[0].startDate,
+          endDate: order.internalOrders[0].endDate,
+          expectedEndDate: order.internalOrders[0].expectedEndDate,
+
+
           commission: order.commission,
           client: order.client,
           clientOrderCode: order.clientOrderCode,
-          startDate: order.startDate,
-          endDate: order.endDate,
-          expectedEndDate: order.expectedEndDate
+
 
         }
       )
@@ -143,7 +147,7 @@ export class TableOrdersComponent extends SubscriberContextComponent implements 
     return ("/orders/edit/" + id)
   }
 
-  deleteById(id: number, table: MatTable<any>) {
+  deleteById(id: string, table: MatTable<any>) {
     this.subscribeWithContext(this.repo.removeOrderbyId(id), value => {
       if (value) {
         this.snackbar.open("Cancellato correttamente", "chiudi")
@@ -156,6 +160,14 @@ export class TableOrdersComponent extends SubscriberContextComponent implements 
         }
       )
     })
+  }
+  downloadPdf(id: string) {
+    this.subscribeWithContext(
+      this.repo.getPdf(id),
+      value => {
+        saveAs(value, `commessa${id}.pdf`)
+      }
+    )
   }
 
   convertColumnName(column: string) {

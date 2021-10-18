@@ -6,8 +6,11 @@ import model.tables.ProcessesTable
 import model.tables.UserAuthTable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.UUIDEntity
+import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import routes.auth.Role
+import java.util.*
 
 class UserAuth(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<UserAuth>(
@@ -22,8 +25,8 @@ class UserAuth(id: EntityID<Int>) : IntEntity(id) {
 
 }
 
-class Order(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Order>(
+class Order(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<Order>(
         OrdersTable
     )
 
@@ -33,16 +36,14 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
     var commission by OrdersTable.commission
     var client by OrdersTable.client
     var clientOrderCode by OrdersTable.clientOrderCode
-    var startDate: Long? by OrdersTable.startDate
-    var endDate: Long? by OrdersTable.endDate
-    var expectedEndDate: Long? by OrdersTable.expectedEndDate
+
     var creationTime: Long by OrdersTable.creationTime
     val internalOrders by InternalOrder referrersOn InternalOrdersTable.orderPrincipal
 
 }
 
-class InternalOrder(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<InternalOrder>(
+class InternalOrder(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<InternalOrder>(
         InternalOrdersTable
     )
 
@@ -53,9 +54,11 @@ class InternalOrder(id: EntityID<Int>) : IntEntity(id) {
     var operator by InternalOrdersTable.operator
     private var processes by InternalOrdersTable.processes
     var externalTreatments by InternalOrdersTable.externalTreatments
+    var startDate: Long? by InternalOrdersTable.startDate
+    var endDate: Long? by InternalOrdersTable.endDate
+    var expectedEndDate: Long? by InternalOrdersTable.expectedEndDate
 
-
-    var orderPrincipal: EntityID<Int> by InternalOrdersTable.orderPrincipal
+    var orderPrincipal: EntityID<UUID> by InternalOrdersTable.orderPrincipal
 
     fun getProcesses(): List<String> {
         return processes?.replace("\\s".toRegex(), "")?.split(',') ?: emptyList<String>()

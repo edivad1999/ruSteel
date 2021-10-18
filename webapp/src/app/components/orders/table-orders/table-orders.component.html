@@ -15,6 +15,8 @@
       <span *ngIf="column==='azioni'">
         <span *ngIf="element['id']">
           <button mat-icon-button  color="warn" (click)="deleteById(element['id'],table)"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button (click)="downloadPdf(element['id'])"><mat-icon>picture_as_pdf</mat-icon></button>
+
           <button mat-icon-button color="accent" [routerLink]="getEditUrl(element['id'])"><mat-icon>edit</mat-icon></button>
         </span>
 

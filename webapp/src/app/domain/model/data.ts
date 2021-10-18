@@ -6,21 +6,19 @@ export type AuthState = 'AUTHENTICATING' | 'AUTHENTICATED' | 'UNAUTHENTICATED';
 
 
 export interface Order {
-  id: number;//when creating or editing id will be ignored
+  id: string;//when creating or editing id will be ignored
   product: string;
   requestedDate: number;
   requestedQuantity: number;
   commission: string;
   client: string;
   clientOrderCode: string;
-  startDate: number | null;
-  endDate: number | null;
-  expectedEndDate: number | null;
+
   internalOrders: InternalOrder[];
 }
 
 export interface InternalOrder {
-  id: number; //when creating or editing id will be ignored
+  id: string; //when creating or editing id will be ignored
   productCode: string
   productQuantity: number,
   rawCode: string,
@@ -28,7 +26,33 @@ export interface InternalOrder {
   operator: string,
   processes: string[],
   externalTreatments: string,
+  startDate: number | null;
+  endDate: number | null;
+  expectedEndDate: number | null;
 
+}
+export interface CreateOrderRequest {
+  product: string;
+  requestedDate: number;
+  requestedQuantity: number;
+  commission: string;
+  client: string;
+  clientOrderCode: string;
+
+  internalOrders: CreateInternalOrderRequest[];
+}
+
+export interface CreateInternalOrderRequest {
+  productCode: string
+  productQuantity: number,
+  rawCode: string,
+  rawQuantity: number,
+  operator: string,
+  processes: string[],
+  externalTreatments: string,
+  startDate: number | null;
+  endDate: number | null;
+  expectedEndDate: number | null;
 
 }
 

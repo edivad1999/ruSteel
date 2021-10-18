@@ -39,7 +39,7 @@ export class OrdersComponent extends SubscriberContextComponent implements OnIni
     this.router.navigateByUrl('/orders/new')
   }
 
-  deleteById(id: number) {
+  deleteById(id: string) {
     this.subscribeWithContext(this.repo.removeOrderbyId(id), value => {
       if (value) {
         this.snackbar.open("Cancellato correttamente", "chiudi")

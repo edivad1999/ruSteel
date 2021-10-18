@@ -5,7 +5,7 @@ import {JwtHandlerService} from '../../utils/jwt-handler.service';
 import {Endpoints} from '../endpoints/endpoints';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthTokenData} from '../../data/requests';
-import {Completion, Order, PasswordChangeRequest} from "../../domain/model/data";
+import {Completion, CreateOrderRequest, Order, PasswordChangeRequest} from "../../domain/model/data";
 
 
 @Injectable({
@@ -27,7 +27,7 @@ export class DatasourceService {
     );
   }
 
-  getOrderById(id: number): Observable<Order> {
+  getOrderById(id: string): Observable<Order> {
     return this.httpClient.get(
       this.endpoints.getOrderByIdUrl(id),
       {observe: "response"}
@@ -45,7 +45,7 @@ export class DatasourceService {
     )
   }
 
-  removeOrderbyId(id: number): Observable<boolean> {
+  removeOrderbyId(id: string): Observable<boolean> {
     return this.httpClient.get(
       this.endpoints.removeOrderbyIdUrl(id),
       {observe: "response"}
@@ -54,7 +54,7 @@ export class DatasourceService {
     )
   }
 
-  editOrderbyId(id: number, order: Order): Observable<Order> {
+  editOrderbyId(id: string, order: Order): Observable<Order> {
     return this.httpClient.post(
       this.endpoints.editOrderbyIdUrl(id),
       order,
@@ -66,7 +66,7 @@ export class DatasourceService {
     )
   }
 
-  newOrder(order: Order): Observable<Order> {
+  newOrder(order: CreateOrderRequest): Observable<Order> {
     return this.httpClient.post(
       this.endpoints.newOrderUrl(),
       order,
@@ -134,6 +134,12 @@ export class DatasourceService {
         return of(false);
       })
     )
+  }
+
+  getPdf(id: string): Observable<Blob> {
+    return this.httpClient.get(this.endpoints.getPdfUrl(id), {responseType: 'arraybuffer'}).pipe(
+      map((a) => new Blob([a], {type: 'octet/stream'}))
+    );
   }
 
   getCompletion(): Observable<Completion> {

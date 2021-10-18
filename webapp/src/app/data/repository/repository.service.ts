@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {DatasourceService} from '../../core/datasource/datasource.service';
 import {Observable, of, ReplaySubject} from 'rxjs';
-import {AuthState, Completion, Order} from '../../domain/model/data';
+import {AuthState, Completion, CreateOrderRequest, Order} from '../../domain/model/data';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthTokenData} from '../requests';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class RepositoryService {
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class RepositoryService {
   authenticationStateFlow = new ReplaySubject<AuthState>(1);
 
 
@@ -41,7 +41,7 @@ export class RepositoryService {
     );
   }
 
-  getOrderById(id: number): Observable<Order> {
+  getOrderById(id: string): Observable<Order> {
     return this.datasource.getOrderById(id)
   }
 
@@ -50,17 +50,17 @@ export class RepositoryService {
 
   }
 
-  removeOrderbyId(id: number): Observable<boolean> {
+  removeOrderbyId(id: string): Observable<boolean> {
     return this.datasource.removeOrderbyId(id)
 
   }
 
-  editOrderbyId(id: number, order: Order): Observable<Order> {
+  editOrderbyId(id: string, order: Order): Observable<Order> {
     return this.datasource.editOrderbyId(id, order)
 
   }
 
-  newOrder(order: Order): Observable<Order> {
+  newOrder(order: CreateOrderRequest): Observable<Order> {
     return this.datasource.newOrder(order)
 
   }
@@ -99,5 +99,8 @@ export class RepositoryService {
 
   getCompletion(): Observable<Completion> {
     return this.datasource.getCompletion()
+  }
+  getPdf(id:string){
+    return this.datasource.getPdf(id)
   }
 }

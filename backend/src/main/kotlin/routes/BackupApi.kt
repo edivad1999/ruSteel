@@ -55,9 +55,7 @@ fun Route.backupApi() = route("backup") {
                             commission = request.commission
                             client = request.client
                             clientOrderCode = request.clientOrderCode
-                            startDate = request.startDate
-                            endDate = request.endDate
-                            expectedEndDate = request.expectedEndDate
+
                             creationTime = System.currentTimeMillis()
 
                         }
@@ -69,6 +67,9 @@ fun Route.backupApi() = route("backup") {
                                 rawQuantity = it.rawQuantity
                                 operator = it.operator
                                 externalTreatments = it.externalTreatments
+                                startDate = it.startDate
+                                endDate = it.endDate
+                                expectedEndDate = it.expectedEndDate
                                 orderPrincipal = newOrder.id
                                 setProcesses(it.processes ?: emptyList<String>())
                             }

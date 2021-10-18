@@ -15,7 +15,7 @@ export class Endpoints {
     if (document.location.hostname !== "localhost") {
       this.hostname = "rusteel.herokuapp.com"
       this.httpProtocol = 'https'
-      this.port=80
+      this.port = 80
 
     }
 
@@ -29,7 +29,7 @@ export class Endpoints {
     return this.buildUrl('login');
   }
 
-  getOrderByIdUrl(id: number) {
+  getOrderByIdUrl(id: string) {
     return this.buildUrl(`order/id?id=${id}`);
   }
 
@@ -37,11 +37,11 @@ export class Endpoints {
     return this.buildUrl('order/all');
   }
 
-  removeOrderbyIdUrl(id: number) {
+  removeOrderbyIdUrl(id: string) {
     return this.buildUrl(`order/remove?id=${id}`);
   }
 
-  editOrderbyIdUrl(id: number) {
+  editOrderbyIdUrl(id: string) {
     return this.buildUrl(`order/edit?id=${id}`);
   }
 
@@ -67,6 +67,10 @@ export class Endpoints {
     }
     url += finalPath;
     return url;
+  }
+
+  getPdfUrl(id: string) {
+    return this.buildUrl(`order/qr?id=${id}`);
   }
 
   uploadBackupDBUrl() {

@@ -30,8 +30,6 @@ export class ManageBackupsComponent extends SubscriberContextComponent implement
         saveAs(file, `backup_${Date.now().toString()}.json`)
       }
     )
-
-
   }
 
   onBackUpFileSelected(target: any, backupFileInput: HTMLInputElement): void {

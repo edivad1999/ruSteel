@@ -4,10 +4,11 @@ import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validat
 import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
 import {MatSelect} from "@angular/material/select";
-import {Completion, Order} from "../../../domain/model/data";
+import {Completion, CreateInternalOrderRequest, CreateOrderRequest, InternalOrder, Order} from "../../../domain/model/data";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
+
 
 @Component({
   selector: 'app-new-order',
@@ -40,7 +41,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
         map(m => m.get('id')),
         map(id => {
             if (id) {
-              this.subscribeWithContext(this.repo.getOrderById(+id), response => {
+              this.subscribeWithContext(this.repo.getOrderById(id), response => {
                 this.editOrder = response
                 this.setForm(response)
               })
@@ -83,10 +84,8 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   )
   datesFormGroup = this.fb.group({
     requestedDate: this.fb.control(null, [Validators.required]),
-    startDate: this.fb.control(null),
-    endDate: this.fb.control(null),
-    expectedEndDate: this.fb.control(null),
   })
+
 
   formGroupWrapper = this.fb.group(
     {
@@ -100,7 +99,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   addNewInternalOrder() {
     this.internalOrdersFormArray.push(
       this.fb.group({
-        id: this.fb.control(0),
+        id: this.fb.control('dummy'),
         productCode: this.fb.control(null, [Validators.required]),
         productQuantity: this.fb.control(null, [Validators.required]),
         rawCode: this.fb.control(null, [Validators.required]),
@@ -108,6 +107,9 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
         operator: this.fb.control(null, [Validators.required]),
         processes: this.fb.array([]),
         externalTreatments: this.fb.control(null),
+        startDate: this.fb.control(null),
+        endDate: this.fb.control(null),
+        expectedEndDate: this.fb.control(null),
       })
     )
   }
@@ -130,9 +132,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
     this.generalFormGroup.get("client")?.setValue(o.client)
     this.generalFormGroup.get("clientOrderCode")?.setValue(o.clientOrderCode)
     this.datesFormGroup.get("requestedDate")?.setValue(this.convertToInputDateCompatible(new Date(o.requestedDate)))
-    this.datesFormGroup.get("startDate")?.setValue(o.startDate ? this.convertToInputDateCompatible(new Date(o.startDate)) : null)
-    this.datesFormGroup.get("endDate")?.setValue(o.endDate ? this.convertToInputDateCompatible(new Date(o.endDate)) : null)
-    this.datesFormGroup.get("expectedEndDate")?.setValue(o.expectedEndDate ? this.convertToInputDateCompatible(new Date(o.expectedEndDate)) : null)
+
     if (o.internalOrders.length > 0) {
       o.internalOrders.forEach(internal => {
           this.internalOrdersFormArray.push(
@@ -145,6 +145,10 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
               operator: this.fb.control(internal.operator, [Validators.required]),
               processes: this.fb.array(internal.processes),
               externalTreatments: this.fb.control(internal.externalTreatments),
+              startDate: this.fb.control(internal.startDate ? this.convertToInputDateCompatible(new Date(internal.startDate)) : null),
+              endDate: this.fb.control(internal.endDate ? this.convertToInputDateCompatible(new Date(internal.endDate)) : null),
+              expectedEndDate: this.fb.control(internal.expectedEndDate ? this.convertToInputDateCompatible(new Date(internal.expectedEndDate)) : null),
+
             })
           )
         }
@@ -196,12 +200,30 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
       clientOrderCode: this.generalFormGroup.value.clientOrderCode,
 
       requestedDate: this.parseDateToInstant(this.datesFormGroup.value.requestedDate),
-      startDate: this.parseDateToInstant(this.datesFormGroup.value.startDate),
-      endDate: this.parseDateToInstant(this.datesFormGroup.value.endDate),
-      expectedEndDate: this.parseDateToInstant(this.datesFormGroup.value.expectedEndDate),
-      internalOrders: this.internalOrdersFormArray.value
+      internalOrders: this.internalOrdersFormArrayToInternalOrders(this.internalOrdersFormArray)
     }
     return order
+  }
+
+  internalOrdersFormArrayToInternalOrders(fa: FormArray): InternalOrder[] {
+    return fa.controls.map(
+      control => {
+        const internal: InternalOrder = {
+          id: control.value.id,//when creating or editing id will be ignored
+          productCode: control.value.productCode,
+          productQuantity: control.value.productQuantity,
+          rawCode: control.value.rawCode,
+          rawQuantity: control.value.rawQuantity,
+          operator: control.value.operator,
+          processes: control.value.processes,
+          externalTreatments: control.value.externalTreatments,
+          startDate: this.parseDateToInstant(control.value.startDate),
+          endDate: this.parseDateToInstant(control.value.endDate),
+          expectedEndDate: this.parseDateToInstant(control.value.expectedEndDate)
+        }
+        return internal
+      }
+    )
   }
 
   removeInternal(internalIndex: number) {
@@ -216,14 +238,40 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
       Object.keys(internal).forEach(key => internal[key] === undefined || internal[key] === '' ? delete internal[key] : {});
 
     })
-    this.subscribeWithContext(this.repo.newOrder(order), response => {
+    const orderRequest: CreateOrderRequest = {
+      product: order.product,
+      clientOrderCode: order.clientOrderCode,
+      requestedDate: order.requestedDate,
+      commission: order.commission,
+      requestedQuantity: order.requestedQuantity,
+      client: order.client,
+      internalOrders: order.internalOrders.map(internal => {
+        const createInternal: CreateInternalOrderRequest = {
+          endDate: internal.endDate,
+          externalTreatments: internal.externalTreatments,
+          expectedEndDate: internal.expectedEndDate,
+          rawCode: internal.rawCode,
+          rawQuantity: internal.rawQuantity,
+          startDate: internal.startDate,
+          operator: internal.operator,
+          productCode: internal.productCode,
+          productQuantity: internal.productQuantity,
+          processes: internal.processes,
+        }
+        return createInternal
+      }),
+    }
+
+    this.subscribeWithContext(this.repo.newOrder(orderRequest), response => {
       if (response) {
         this.snackbar.open("Dati caricati correttamente", "chiudi")
+        this.router.navigateByUrl('/home')
+
       }
     })
   }
 
-  deleteById(id: number,) {
+  deleteById(id: string,) {
     this.subscribeWithContext(this.repo.removeOrderbyId(id), value => {
         if (value) {
           this.snackbar.open("Cancellato correttamente", "chiudi")
@@ -249,6 +297,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
     this.subscribeWithContext(this.repo.editOrderbyId(this.editOrder!.id, order), response => {
       if (response) {
         this.snackbar.open("Dati caricati correttamente", "chiudi")
+        this.router.navigateByUrl('/home')
       }
     })
   }
