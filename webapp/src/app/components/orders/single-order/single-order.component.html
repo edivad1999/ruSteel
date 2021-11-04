@@ -16,19 +16,25 @@
       </div>
     </div>
     <div style="margin-top: 12px">
-      <div *ngFor="let internal of order.internalOrders" style="display: grid; grid-template-columns: 40px auto">
-        <div>
-          <mat-icon>inventory_2</mat-icon>
-        </div>
-        <div>
-          Prodotto:{{internal.productCode}} | quantità: {{internal.productQuantity}}<br>
-          Grezzo:{{internal.rawCode}} | quantità: {{internal.rawQuantity}}<br>
-          Lavorazioni: {{internal.processes.join("-> ")}}<br>
-          Lavorazioni esterne: {{internal.externalTreatments}}<br>
-          Operatore:{{internal.operator}}
-          <div>Data di inizio: {{internal.startDate ? getOrderDate(internal.startDate) : "Data non impostata"}}</div>
-          <div>Data di fine stimata: {{internal.expectedEndDate ? getOrderDate(internal.expectedEndDate) : "Data non impostata"}}</div>
-          <div>Data di fine: {{internal.endDate ? getOrderDate(internal.endDate) : "Data non impostata"}}</div>
+      <div *ngFor="let internal of order.internalOrders"
+           class="border" [ngStyle]="{'border-color': '#000000'}">
+        <div style="display: grid; grid-template-columns: 40px auto">
+          <div>
+            <mat-icon [ngStyle]="{'color': '#000000'}">inventory_2</mat-icon>
+          </div>
+          <div>
+            <div *ngIf="fromList">
+              Stato: <b [ngStyle]="{'color': getStatusColor(internal)}">{{getStatus(internal)}}</b>
+            </div>
+            Prodotto:{{internal.productCode}} | quantità: {{internal.productQuantity}}<br>
+            Grezzo:{{internal.rawCode}} | quantità: {{internal.rawQuantity}}<br>
+            Lavorazioni: {{internal.processes.join("-> ")}}<br>
+            Lavorazioni esterne: {{internal.externalTreatments}}<br>
+            Operatore:{{internal.operator}}
+            <div>Data di inizio: {{internal.startDate ? getOrderDate(internal.startDate) : "Data non impostata"}}</div>
+            <div>Data di fine stimata: {{internal.expectedEndDate ? getOrderDate(internal.expectedEndDate) : "Data non impostata"}}</div>
+            <div>Data di fine: {{internal.endDate ? getOrderDate(internal.endDate) : "Data non impostata"}}</div>
+          </div>
         </div>
       </div>
     </div>

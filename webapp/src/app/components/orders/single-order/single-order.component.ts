@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Order} from "../../../domain/model/data";
+import {InternalOrder, Order} from "../../../domain/model/data";
 import {Router} from "@angular/router";
 import {saveAs} from "file-saver";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
@@ -22,6 +22,26 @@ export class SingleOrderComponent extends SubscriberContextComponent implements 
   getOrderDate(instant: number) {
     return new Date(instant).toLocaleDateString()
 
+  }
+
+  getStatus(internal: InternalOrder): string {
+    if (internal.endDate) {
+      return "Completato"
+    } else if (internal.startDate && !internal.endDate) {
+      return "In lavorazione"
+    } else {
+      return "Non iniziato"
+    }
+  }
+
+  getStatusColor(internal: InternalOrder): string {
+    if (internal.endDate) {
+      return "#46a35e"
+    } else if (internal.startDate && !internal.endDate) {
+      return "#308af0"
+    } else {
+      return "#000000"
+    }
   }
 
   ngOnInit(): void {

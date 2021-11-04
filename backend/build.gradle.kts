@@ -79,7 +79,7 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-
+    //qr
     implementation ("com.google.zxing:core:3.4.1")
     implementation("com.google.zxing:javase:3.4.1")
     //exposed DAO
@@ -89,10 +89,10 @@ dependencies {
 
     // DB Connection pool
 
-//    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
+    //implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     // DB Driver
     implementation("org.postgresql:postgresql:$postgresVersion")
-//pdf
+    //pdf
     implementation ("com.itextpdf:itext7-core:7.1.11")
 
     implementation("id.jasoet:fun-pdf:1.0.3")

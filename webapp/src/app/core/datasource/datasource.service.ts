@@ -5,7 +5,7 @@ import {JwtHandlerService} from '../../utils/jwt-handler.service';
 import {Endpoints} from '../endpoints/endpoints';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthTokenData} from '../../data/requests';
-import {Completion, CreateOrderRequest, Order, PasswordChangeRequest} from "../../domain/model/data";
+import {Completion, CreateOrderRequest, InternalOrder, Order, PasswordChangeRequest} from "../../domain/model/data";
 
 
 @Injectable({
@@ -146,6 +146,34 @@ export class DatasourceService {
     return this.httpClient.get(this.endpoints.getCompletionUrl(), {observe: "response"}
     ).pipe(
       map(value => value.body as Completion)
+    )
+  }
+
+  getInteralOrderById(id: string): Observable<InternalOrder | null> {
+    return this.httpClient.get(
+      this.endpoints.getInternalOrderUrl(id),
+      {observe: "response"}
+    ).pipe(
+      catchError(err => of(null)),
+      map(resp => {
+        if (resp) {
+          return resp.body as InternalOrder
+        } else return null
+      })
+    )
+  }
+
+  setInternalDate(id: string, action: string, date: number): Observable<boolean> {
+    return this.httpClient.post(
+      this.endpoints.setInternalDateUrl(),
+      {id, action, date},
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
     )
   }
 }

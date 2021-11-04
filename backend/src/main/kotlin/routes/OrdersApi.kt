@@ -6,7 +6,6 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import model.dao.InternalOrder
 import model.dao.Order
@@ -73,6 +72,18 @@ fun Route.orderApi() = route("order") {
                 order.client = request.client
                 order.clientOrderCode = request.clientOrderCode
 
+                order.internalOrders.forEach { internal ->
+                    var found = false
+                    request.internalOrders.forEach {
+                        if (it.id.toUUID() == internal.id.value) {
+                            found = true
+                        }
+                    }
+                    if (!found) {
+                        internal.delete()
+                    }
+                }
+
                 request.internalOrders.forEach {
                     val internalOrder = InternalOrder.findById(it.id.toUUID())
                     if (internalOrder != null) {
@@ -117,6 +128,30 @@ fun Route.orderApi() = route("order") {
                 }
 
 
+            }
+        }
+        get("internal") {
+            val id = UUID.fromString(call.parameters["id"]!!)
+            transaction(db) {
+                InternalOrder.findById(id)?.serialize()
+            }.apply {
+                call.respond(this ?: HttpStatusCode.BadRequest)
+            }
+        }
+        post("setInternal") {
+            val req = call.receive<SetInternalRequest>()
+            transaction(db) {
+                InternalOrder.findById(req.id.toUUID())!!.apply {
+                    if (req.action == "end") {
+                        this.endDate = req.date
+                    } else {
+                        this.startDate = req.date
+
+                    }
+                }
+
+            }.apply {
+                call.respond(HttpStatusCode.OK)
             }
         }
         get("qr") {
@@ -184,7 +219,7 @@ fun Route.orderApi() = route("order") {
 private fun String.toUUID(): UUID {
     return try {
         UUID.fromString(this)
-    }catch (e:Exception){
+    } catch (e: Exception) {
         UUID.randomUUID()
     }
 }
@@ -232,6 +267,13 @@ data class SerializableOrder(
     val clientOrderCode: String,
 
     val internalOrders: List<SerializableInternalOrder>,
+)
+
+@Serializable
+data class SetInternalRequest(
+    val id: String,
+    val action: String,
+    val date: Long,
 )
 
 @Serializable

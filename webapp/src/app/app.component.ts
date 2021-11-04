@@ -16,6 +16,7 @@ interface ListItem {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent extends SubscriberContextComponent implements OnInit {
+
   title = 'webapp';
   sidenavMode: MatDrawerMode = 'side';
   startOpened: boolean = window.innerWidth >= 916;
@@ -27,6 +28,7 @@ export class AppComponent extends SubscriberContextComponent implements OnInit {
     {name: 'Login', url: '/login', needsAuthorization: false},
     {name: 'Home', url: '/home', needsAuthorization: true},
     {name: 'Impostazioni', url: '/settings', needsAuthorization: true},
+    {name: 'Qr', url: '/qr', needsAuthorization: true},
     {name: 'Logout', url: '/logout', needsAuthorization: true},
 
   ];

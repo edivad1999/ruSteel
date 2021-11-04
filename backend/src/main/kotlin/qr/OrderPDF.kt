@@ -19,6 +19,10 @@ import com.itextpdf.layout.property.TextAlignment
 import kotlinx.datetime.Clock
 import routes.SerializableInternalOrder
 import routes.SerializableOrder
+import routes.auth.Base64Encoder
+import routes.auth.JavaBase64Encoder
+import routes.auth.PasswordDigester
+import routes.auth.SHA256Digester
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -27,12 +31,9 @@ import java.util.*
 import javax.imageio.ImageIO
 
 
-
-
-
 class OrderPDF(private val order: SerializableOrder) {
 
-
+    val encoder: Base64Encoder = JavaBase64Encoder()
     private fun getHeader(): Paragraph {
         val text = "Prodotto:${this.order.product}, quantità ${this.order.requestedQuantity}\n" +
                 "Data richiesta:${convertLongToTime(this.order.requestedDate)}\n" +
@@ -68,14 +69,11 @@ class OrderPDF(private val order: SerializableOrder) {
 
     private fun internalAsHtml(internal: SerializableInternalOrder): Table {
 
-        val baos = ByteArrayOutputStream()
-        ImageIO.write(createQR(internal.id.toString(), 150,150), "png", baos)
 
-        val data: ImageData = ImageDataFactory.create(baos.toByteArray())
-        val img = Image(data)
+        val imgStart = createQrImage(encoder.encodeString("${internal.id}, start"))
+        val imgEnd = createQrImage(encoder.encodeString("${internal.id}, end"))
 
-        val qrStart = "qrStartPlaceHolder"
-        val qrEnd = "qrEndPlaceHolder"
+
         val info = "Codice prodotto interno: ${internal.productCode} x ${internal.productQuantity}\n" +
                 "Codice prodotto grezzo: ${internal.rawCode} x ${internal.rawQuantity}\n" +
                 "Lavorazioni: ${if (internal.processes != null && internal.processes.isNotEmpty()) internal.processes.joinToString("-> ") else "nessuna"}\n" +
@@ -85,8 +83,8 @@ class OrderPDF(private val order: SerializableOrder) {
         val table = Table(floatArrayOf(3f, 3f, 4f)).setAutoLayout()
 
         table.setTextAlignment(TextAlignment.LEFT)
-        table.addCell(Cell().add(img).setBorder(Border.NO_BORDER).setMarginRight(10f))
-        table.addCell(Cell().add(img).setBorder(Border.NO_BORDER).setMarginRight(10f))
+        table.addCell(Cell().add(imgStart).setBorder(Border.NO_BORDER).setMarginRight(10f))
+        table.addCell(Cell().add(imgEnd).setBorder(Border.NO_BORDER).setMarginRight(10f))
         table.addCell(Cell().add(Paragraph(info)).setBorder(Border.NO_BORDER))
 
         return table
@@ -100,7 +98,15 @@ class OrderPDF(private val order: SerializableOrder) {
         return format.format(date)
     }
 
-    fun createQR(
+    private fun createQrImage(toPrint: String): Image {
+        val baos = ByteArrayOutputStream()
+        ImageIO.write(createQR(toPrint, 150, 150), "png", baos)
+
+        val data: ImageData = ImageDataFactory.create(baos.toByteArray())
+        return Image(data)
+    }
+
+    private fun createQR(
         data: String, height: Int, width: Int,
     ): BufferedImage {
         val matrix = MultiFormatWriter().encode(

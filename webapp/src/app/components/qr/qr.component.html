@@ -1,0 +1,29 @@
+<div *ngIf="!qrResultString || scanErrorMessage">
+  <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+</div>
+<lib-central-column>
+  <mat-error *ngIf="scanErrorMessage">{{scanErrorMessage}}</mat-error>
+  <mat-card *ngIf="internalOrder && qrResultString">
+    <mat-card-title>{{qrResultString.action === "end" ? "Termina" : "Inizia"}}  la lavorazione di:</mat-card-title>
+    <div>
+      Prodotto:{{internalOrder.productCode}} | quantità: {{internalOrder.productQuantity}}<br>
+      Grezzo:{{internalOrder.rawCode}} | quantità: {{internalOrder.rawQuantity}}<br>
+      Lavorazioni: {{internalOrder.processes.join("-> ")}}<br>
+      Lavorazioni esterne: {{internalOrder.externalTreatments}}<br>
+      Operatore:{{internalOrder.operator}}
+      <div>Data di inizio: {{internalOrder.startDate ? getOrderDate(internalOrder.startDate) : "Data non impostata"}}</div>
+      <div>Data di fine stimata: {{internalOrder.expectedEndDate ? getOrderDate(internalOrder.expectedEndDate) : "Data non impostata"}}</div>
+      <div>Data di fine: {{internalOrder.endDate ? getOrderDate(internalOrder.endDate) : "Data non impostata"}}</div>
+    </div>
+
+    <mat-card-actions>
+      <button (click)="rescan()" mat-raised-button color="warn">Riscannerizza QR</button>
+      <span *ngIf="qrResultString.action==='end'">
+          <button (click)="setInternal()" mat-raised-button color="primary">Termina lavorazione ora</button>
+    </span>
+      <span *ngIf="qrResultString.action==='start'">
+          <button (click)="setInternal()" mat-raised-button color="primary">Avvia lavorazione ora</button>
+    </span>
+    </mat-card-actions>
+  </mat-card>
+</lib-central-column>

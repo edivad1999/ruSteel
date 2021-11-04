@@ -1,0 +1,8 @@
+.border {
+  padding: 3px 3px 3px 3px;
+  border: solid #7a7a7a;
+  border-width: thin;
+  border-radius: 5px;
+  margin-bottom: 5px;
+
+}

@@ -31,6 +31,7 @@ export interface InternalOrder {
   expectedEndDate: number | null;
 
 }
+
 export interface CreateOrderRequest {
   product: string;
   requestedDate: number;
@@ -54,6 +55,11 @@ export interface CreateInternalOrderRequest {
   endDate: number | null;
   expectedEndDate: number | null;
 
+}
+
+export interface QrResponse {
+  id: string,
+  action: string
 }
 
 export interface PasswordChangeRequest {

@@ -12,7 +12,10 @@ export class Endpoints {
   basePath = 'api';
 
   constructor(@Inject(DOCUMENT) private document: Document) {
-    if (document.location.hostname !== "localhost") {
+    //rework to enable usage in local network
+    if (document.location.hostname.startsWith("192")) {
+      this.hostname = document.location.hostname
+    } else if (document.location.hostname !== "localhost") {
       this.hostname = "rusteel.herokuapp.com"
       this.httpProtocol = 'https'
       this.port = 80
@@ -83,5 +86,13 @@ export class Endpoints {
 
   getCompletionUrl() {
     return this.buildUrl('completion/all');
+  }
+
+  getInternalOrderUrl(id: string) {
+    return this.buildUrl(`order/internal?id=${id}`)
+  }
+
+  setInternalDateUrl() {
+    return this.buildUrl(`order/setInternal`)
   }
 }

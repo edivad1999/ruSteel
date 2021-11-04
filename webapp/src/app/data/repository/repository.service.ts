@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {DatasourceService} from '../../core/datasource/datasource.service';
 import {Observable, of, ReplaySubject} from 'rxjs';
-import {AuthState, Completion, CreateOrderRequest, Order} from '../../domain/model/data';
+import {AuthState, Completion, CreateOrderRequest, InternalOrder, Order} from '../../domain/model/data';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthTokenData} from '../requests';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
 
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class RepositoryService {
+@Injectable({
+  providedIn: 'root'
+})
+export class RepositoryService {
   authenticationStateFlow = new ReplaySubject<AuthState>(1);
 
 
@@ -100,7 +100,16 @@ import {JwtHandlerService} from '../../utils/jwt-handler.service';
   getCompletion(): Observable<Completion> {
     return this.datasource.getCompletion()
   }
-  getPdf(id:string){
+
+  getPdf(id: string) {
     return this.datasource.getPdf(id)
+  }
+
+  getInteralOrderById(id: string): Observable<InternalOrder | null> {
+    return this.datasource.getInteralOrderById(id)
+  }
+
+  setInternalDate(id: string, action: string, date: number): Observable<boolean>{
+    return this.datasource.setInternalDate(id,action,date);
   }
 }

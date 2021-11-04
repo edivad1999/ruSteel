@@ -35,11 +35,13 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {SingleOrderComponent} from './components/orders/single-order/single-order.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {TableOrdersComponent} from './components/orders/table-orders/table-orders.component';
-import { SettingsComponent } from './components/settings/settings.component';
+import {SettingsComponent} from './components/settings/settings.component';
 import {ManageBackupsComponent} from "./components/settings/manage-backups/manage-backups.component";
 import {RestoreDialogComponent} from "./components/settings/manage-backups/restore-dialog/restore-dialog.component";
-import { ChangePasswordComponent } from './components/settings/change-password/change-password.component';
+import {ChangePasswordComponent} from './components/settings/change-password/change-password.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {ZXingScannerModule} from "@zxing/ngx-scanner";
+import {QrComponent} from './components/qr/qr.component';
 
 @NgModule({
   declarations: [
@@ -54,38 +56,40 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     SettingsComponent,
     ManageBackupsComponent,
     RestoreDialogComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    QrComponent
   ],
-    imports: [
-        BrowserModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatSidenavModule,
-        HttpClientModule,
-        MatCardModule,
-        MatToolbarModule,
-        BrowserAnimationsModule,
-        MatListModule,
-        AppRoutingModule,
-        MatRippleModule,
-        MatIconModule,
-        ReactiveFormsModule,
-        MatSnackBarModule,
-        MatInputModule,
-        MatDialogModule,
-        MatTableModule,
-        MatSortModule,
-        MatButtonToggleModule,
-        MatSlideToggleModule,
-        MatSelectModule,
-        MatProgressBarModule,
-        CentralColumnModule,
-        MatExpansionModule,
-        MatCheckboxModule,
-        MatStepperModule,
-        MatTabsModule,
-        MatAutocompleteModule
-    ],
+  imports: [
+    BrowserModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSidenavModule,
+    HttpClientModule,
+    MatCardModule,
+    MatToolbarModule,
+    BrowserAnimationsModule,
+    MatListModule,
+    AppRoutingModule,
+    MatRippleModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatSnackBarModule,
+    MatInputModule,
+    MatDialogModule,
+    MatTableModule,
+    MatSortModule,
+    MatButtonToggleModule,
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    CentralColumnModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatStepperModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    ZXingScannerModule
+  ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
