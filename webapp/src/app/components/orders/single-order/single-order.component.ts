@@ -4,6 +4,8 @@ import {Router} from "@angular/router";
 import {saveAs} from "file-saver";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
 import {RepositoryService} from "../../../data/repository/repository.service";
+import {catchError} from "rxjs/operators";
+import {of} from "rxjs";
 
 @Component({
   selector: 'app-single-order',
@@ -57,6 +59,48 @@ export class SingleOrderComponent extends SubscriberContextComponent implements 
       value => {
         saveAs(value, `commessa${id}.pdf`)
       }
+    )
+  }
+
+  endProduction(internal: InternalOrder) {
+    const old = internal.endDate
+    internal.endDate = Date.now()
+    this.subscribeWithContext(
+      this.repo.editOrderbyId(this.order.id, this.order).pipe(
+        catchError(err => {
+          internal.endDate = old
+          return of(true)
+        })
+      )
+    )
+  }
+
+  startProduction(internal: InternalOrder) {
+    const old = internal.startDate
+    internal.startDate = Date.now()
+    this.subscribeWithContext(
+      this.repo.editOrderbyId(this.order.id, this.order).pipe(
+        catchError(err => {
+          internal.startDate = old
+          return of(true)
+        })
+      )
+    )
+  }
+
+  resetProduction(internal: InternalOrder) {
+    const oldStart = internal.startDate
+    const oldEnd = internal.endDate
+    internal.startDate = null
+    internal.endDate = null
+    this.subscribeWithContext(
+      this.repo.editOrderbyId(this.order.id, this.order).pipe(
+        catchError(err => {
+          internal.startDate = oldStart
+          internal.endDate = oldEnd
+          return of(true)
+        })
+      )
     )
   }
 }

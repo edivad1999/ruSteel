@@ -91,7 +91,6 @@ fun Application.initDb() = launch {
         SchemaUtils.createMissingTablesAndColumns(OrdersTable)
         SchemaUtils.createMissingTablesAndColumns(InternalOrdersTable)
         SchemaUtils.createMissingTablesAndColumns(ProcessesTable)
-
         //init processes
         val baseProcesses = listOf<String>("Taglio",
             "Tornitura sgrosso",

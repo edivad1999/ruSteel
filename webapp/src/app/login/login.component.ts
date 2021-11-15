@@ -24,9 +24,7 @@ export class LoginComponent extends SubscriberContextComponent implements OnInit
   @Output()
   passwordChange = new EventEmitter<string>();
 
-  usernameControl = new FormControl('', [
-    Validators.required,
-  ]);
+  usernameControl = new FormControl('', [Validators.required]);
   passwordControl = new FormControl('', [
     Validators.required,
     Validators.minLength(6)

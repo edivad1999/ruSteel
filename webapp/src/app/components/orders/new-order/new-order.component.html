@@ -75,7 +75,6 @@
           </mat-form-field>
 
 
-
         </div>
 
       </mat-step>
@@ -161,31 +160,32 @@
                     </mat-form-field>
                   </div>
                   <div>
-                    Lavorazioni: <br>
-                    <div *ngIf="getInternalProcessesFormArray(internalControl).controls.length===0">
-                      Non ci sono lavorazioni
-                    </div>
-                    <div *ngIf="getInternalProcessesFormArray(internalControl).controls.length>0">
-                      <div style="display: flex">
 
-                    <span class="border"
-                          *ngFor="let process of getInternalProcessesFormArray(internalControl).controls; let i=index">
-                        {{process.value}}
-                      <button mat-icon-button color="warn" (click)="removeProcess(internalControl,i)"><mat-icon>remove</mat-icon></button>
-                    </span>
 
-                      </div>
-                    </div>
-                    <div>
-                      <mat-form-field>
-                        <mat-label>Inserisci la lavorazione</mat-label>
-                        <mat-select #select (selectionChange)="selectionChanged(internalControl,select)">
-                          <mat-option *ngFor="let process of processes" [value]="process">
-                            {{process}}
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                    </div>
+                      <mat-chip-list #chipList  aria-label="Video keywords" multiple>
+                        <mat-chip #chip
+                          *ngFor="let process of processes"
+                          [selected]="getInternalProcessesFormArray(internalControl).value.includes(process)"
+                          [value]="process"
+                          (click)="selectionChanged(internalControl,process,getInternalProcessesFormArray(internalControl).value.includes(process))">
+<!--                          (removed)="removeProcess(internalControl,process)">-->
+                          {{process}}
+                        </mat-chip>
+                      </mat-chip-list>
+
+<!--                    <div>-->
+<!--                      <mat-form-field>-->
+<!--                        <mat-label>Inserisci la lavorazione</mat-label>-->
+<!--                        <mat-select #select (selectionChange)="selectionChanged(internalControl,select)">-->
+<!--                          <mat-option *ngFor="let process of processes" [value]="process">-->
+<!--                            {{process}}-->
+<!--                          </mat-option>-->
+<!--                        </mat-select>-->
+<!--                      </mat-form-field>-->
+<!--                    </div>-->
+<!--                    -->
+
+
                     <mat-form-field>
                       <mat-label>Data di inizio</mat-label>
                       <input matInput formControlName="startDate" type="date">

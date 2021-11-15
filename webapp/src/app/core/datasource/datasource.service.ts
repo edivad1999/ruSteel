@@ -142,6 +142,12 @@ export class DatasourceService {
     );
   }
 
+  getExcel(): Observable<Blob> {
+    return this.httpClient.get(this.endpoints.getExcelUrl(), {responseType: 'arraybuffer'}).pipe(
+      map((a) => new Blob([a], {type: 'octet/stream'}))
+    );
+  }
+
   getCompletion(): Observable<Completion> {
     return this.httpClient.get(this.endpoints.getCompletionUrl(), {observe: "response"}
     ).pipe(
@@ -176,4 +182,29 @@ export class DatasourceService {
       })
     )
   }
+
+  removeProcess(value: string):Observable<boolean> {
+    return this.httpClient.get(
+      this.endpoints.removeProcessUrl(value),
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )
+  }
+
+  addProcess(value: string) {
+    return this.httpClient.get(
+      this.endpoints.addProcessUrl(value),
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )  }
 }

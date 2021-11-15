@@ -61,12 +61,18 @@ class InternalOrder(id: EntityID<UUID>) : UUIDEntity(id) {
     var orderPrincipal: EntityID<UUID> by InternalOrdersTable.orderPrincipal
 
     fun getProcesses(): List<String> {
-        return processes?.replace("\\s".toRegex(), "")?.split(',') ?: emptyList<String>()
+        val list = processes?.split(',')
+        return if (list == null) {
+            emptyList()
+        } else {
+            list.forEach { it.trim() }
+            list
+        }
     }
 
     fun setProcesses(proc: List<String>) {
         processes = if (proc.isNotEmpty()) {
-            proc.joinToString(", ")
+            proc.joinToString(",")
         } else {
             null
         }

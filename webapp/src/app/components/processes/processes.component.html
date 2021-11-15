@@ -1,0 +1,25 @@
+<lib-central-column>
+  <div style="display: flex; flex-direction: column">
+    <div *ngFor="let process of processes" style="width: 100%; display: flex; justify-content: space-between; align-items: center" class="border" >
+      <div> {{process}}</div>
+      <div>
+        <button mat-icon-button (click)="delete(process)" color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+  <div>
+    <mat-form-field>
+      <mat-label>
+        Crea un nuovo processo
+      </mat-label>
+      <input matInput [formControl]="newProcess">
+      <mat-error>Non può essere nullo</mat-error>
+    </mat-form-field>
+    <button mat-raised-button (click)="save()" [disabled]="newProcess.invalid">Salva</button>
+  </div>
+</lib-central-column>
+

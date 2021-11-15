@@ -1,4 +1,4 @@
-package qr
+package utils
 
 
 import com.google.zxing.BarcodeFormat
@@ -21,8 +21,6 @@ import routes.SerializableInternalOrder
 import routes.SerializableOrder
 import routes.auth.Base64Encoder
 import routes.auth.JavaBase64Encoder
-import routes.auth.PasswordDigester
-import routes.auth.SHA256Digester
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File

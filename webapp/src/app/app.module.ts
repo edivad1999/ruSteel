@@ -42,6 +42,9 @@ import {ChangePasswordComponent} from './components/settings/change-password/cha
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {ZXingScannerModule} from "@zxing/ngx-scanner";
 import {QrComponent} from './components/qr/qr.component';
+import {MatMenuModule} from "@angular/material/menu";
+import { ProcessesComponent } from './components/processes/processes.component';
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -57,39 +60,42 @@ import {QrComponent} from './components/qr/qr.component';
     ManageBackupsComponent,
     RestoreDialogComponent,
     ChangePasswordComponent,
-    QrComponent
+    QrComponent,
+    ProcessesComponent
   ],
-  imports: [
-    BrowserModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatSidenavModule,
-    HttpClientModule,
-    MatCardModule,
-    MatToolbarModule,
-    BrowserAnimationsModule,
-    MatListModule,
-    AppRoutingModule,
-    MatRippleModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatSnackBarModule,
-    MatInputModule,
-    MatDialogModule,
-    MatTableModule,
-    MatSortModule,
-    MatButtonToggleModule,
-    MatSlideToggleModule,
-    MatSelectModule,
-    MatProgressBarModule,
-    CentralColumnModule,
-    MatExpansionModule,
-    MatCheckboxModule,
-    MatStepperModule,
-    MatTabsModule,
-    MatAutocompleteModule,
-    ZXingScannerModule
-  ],
+    imports: [
+        BrowserModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatSidenavModule,
+        HttpClientModule,
+        MatCardModule,
+        MatToolbarModule,
+        BrowserAnimationsModule,
+        MatListModule,
+        AppRoutingModule,
+        MatRippleModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatInputModule,
+        MatDialogModule,
+        MatTableModule,
+        MatSortModule,
+        MatButtonToggleModule,
+        MatSlideToggleModule,
+        MatSelectModule,
+        MatProgressBarModule,
+        CentralColumnModule,
+        MatExpansionModule,
+        MatCheckboxModule,
+        MatStepperModule,
+        MatTabsModule,
+        MatAutocompleteModule,
+        ZXingScannerModule,
+        MatMenuModule,
+        MatChipsModule
+    ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]

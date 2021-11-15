@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.serialization") version "1.5.20"
-    id ("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 
     application
 //    `maven-publish`
@@ -66,6 +66,9 @@ dependencies {
     api("org.kodein.di", "kodein-di-framework-ktor-server-jvm", kodeinVersion)
     api("ch.qos.logback", "logback-classic", logbackVersion)
 
+// https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation("org.apache.poi:poi:5.1.0")
+    implementation("org.apache.poi:poi-ooxml:5.1.0")
     //kotlinx and mail and common serialization
     implementation("org.jetbrains.kotlinx", "kotlinx-html-jvm", kotlinxHTMLVersion)
     implementation("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinSerializationVersion)
@@ -80,7 +83,7 @@ dependencies {
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     //qr
-    implementation ("com.google.zxing:core:3.4.1")
+    implementation("com.google.zxing:core:3.4.1")
     implementation("com.google.zxing:javase:3.4.1")
     //exposed DAO
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -93,7 +96,7 @@ dependencies {
     // DB Driver
     implementation("org.postgresql:postgresql:$postgresVersion")
     //pdf
-    implementation ("com.itextpdf:itext7-core:7.1.11")
+    implementation("com.itextpdf:itext7-core:7.1.11")
 
     implementation("id.jasoet:fun-pdf:1.0.3")
     //coroutine

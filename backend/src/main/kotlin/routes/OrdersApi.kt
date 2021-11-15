@@ -9,10 +9,12 @@ import io.ktor.routing.*
 import kotlinx.serialization.Serializable
 import model.dao.InternalOrder
 import model.dao.Order
+import model.dao.Process
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
-import qr.OrderPDF
 import routes.auth.Role
+import utils.ExcelUtils
+import utils.OrderPDF
 import java.util.*
 
 fun Route.orderApi() = route("order") {
@@ -38,6 +40,25 @@ fun Route.orderApi() = route("order") {
                 }
             }
             call.respond(result)
+
+        }
+        get("excel") {
+            val processes = transaction(db) {
+                Process.all().map { it.process }.sorted()
+
+            }
+            val order = transaction(db) {
+                Order.all().map { it.serialize() }
+            }
+            val excel = ExcelUtils()
+            call.response.header(
+                HttpHeaders.ContentDisposition,
+                ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, "excel")
+                    .toString()
+            )
+            val file = excel.createExcel(order, processes)
+
+            call.respondFile(file)
 
         }
         get("remove") {

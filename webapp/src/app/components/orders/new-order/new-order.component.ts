@@ -3,7 +3,6 @@ import {RepositoryService} from "../../../data/repository/repository.service";
 import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
 import {SubscriberContextComponent} from "../../../utils/subscriber-context.component";
-import {MatSelect} from "@angular/material/select";
 import {Completion, CreateInternalOrderRequest, CreateOrderRequest, InternalOrder, Order} from "../../../domain/model/data";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -43,7 +42,18 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
             if (id) {
               this.subscribeWithContext(this.repo.getOrderById(id), response => {
                 this.editOrder = response
+
+                response.internalOrders.forEach(
+                  int => {
+                    int.processes.forEach(proc => {
+                      if (!this.processes.includes(proc)) {
+                        this.processes.push(proc)
+                      }
+                    })
+                  }
+                )
                 this.setForm(response)
+
               })
             }
           }
@@ -52,7 +62,13 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
     this.subscribeWithContext(
       this.repo.getAllProcesses(),
       response => {
-        this.processes = response
+        response.forEach(
+          proc => {
+            if (!this.processes.includes(proc)) {
+              this.processes.push(proc)
+            }
+          }
+        )
       }
     )
 
@@ -132,7 +148,6 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
     this.generalFormGroup.get("client")?.setValue(o.client)
     this.generalFormGroup.get("clientOrderCode")?.setValue(o.clientOrderCode)
     this.datesFormGroup.get("requestedDate")?.setValue(this.convertToInputDateCompatible(new Date(o.requestedDate)))
-
     if (o.internalOrders.length > 0) {
       o.internalOrders.forEach(internal => {
           this.internalOrdersFormArray.push(
@@ -159,6 +174,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   }
 
   getControlFromAbstract(a: AbstractControl | null) {
+    console.log(this.processes)
     return a as FormControl
   }
 
@@ -176,12 +192,18 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
     return internalControl.get('processes')! as FormArray
   }
 
-  selectionChanged(internalControl: AbstractControl, select: MatSelect) {
-    this.getInternalProcessesFormArray(internalControl).push(this.fb.control(select.value))
-    select.value = ''
+  selectionChanged(internalControl: AbstractControl, process: string, isSelected: boolean) {
+    if (isSelected) {
+      const i = (this.getInternalProcessesFormArray(internalControl).value as string[]).indexOf(process)
+      this.getInternalProcessesFormArray(internalControl).removeAt(i)
+    } else {
+      this.getInternalProcessesFormArray(internalControl).push(this.fb.control(process))
+
+    }
   }
 
-  removeProcess(internalControl: AbstractControl, i: number) {
+  removeProcess(internalControl: AbstractControl, val: string) {
+    const i = (this.getInternalProcessesFormArray(internalControl).value as string[]).indexOf(val)
     this.getInternalProcessesFormArray(internalControl).removeAt(i)
   }
 
@@ -284,7 +306,6 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   }
 
   modifyOrder(order: Order) {
-    console.log(order)
     // @ts-ignore
     Object.keys(order).forEach(key => order[key] === undefined || order[key] === '' ? delete order[key] : {});
 
@@ -293,7 +314,6 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
       Object.keys(internal).forEach(key => internal[key] === undefined || internal[key] === '' ? delete internal[key] : {});
 
     })
-    console.log(order)
     this.subscribeWithContext(this.repo.editOrderbyId(this.editOrder!.id, order), response => {
       if (response) {
         this.snackbar.open("Dati caricati correttamente", "chiudi")

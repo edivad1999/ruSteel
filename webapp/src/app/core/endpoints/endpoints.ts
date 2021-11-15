@@ -76,6 +76,10 @@ export class Endpoints {
     return this.buildUrl(`order/qr?id=${id}`);
   }
 
+  getExcelUrl() {
+    return this.buildUrl(`order/excel`);
+  }
+
   uploadBackupDBUrl() {
     return this.buildUrl('backup/restore');
   }
@@ -94,5 +98,13 @@ export class Endpoints {
 
   setInternalDateUrl() {
     return this.buildUrl(`order/setInternal`)
+  }
+
+  removeProcessUrl(value: string) {
+    return this.buildUrl(`process/remove?name=${value}`)
+  }
+
+  addProcessUrl(value: string) {
+    return this.buildUrl(`process/new?name=${value}`)
   }
 }

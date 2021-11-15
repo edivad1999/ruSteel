@@ -45,8 +45,9 @@ fun Route.backupApi() = route("backup") {
                 part.dispose()
                 val jsonData = Json.decodeFromString<List<SerializableOrder>>(FileReader(fileTmp).readText())
                 transaction(db) {
-                    Order.all().forEach { it.delete() }
                     InternalOrder.all().forEach { it.delete() }
+                    Order.all().forEach { it.delete() }
+
                     jsonData.forEach { request ->
                         val newOrder = Order.new {
                             product = request.product
@@ -61,15 +62,15 @@ fun Route.backupApi() = route("backup") {
                         }
                         request.internalOrders.forEach {
                             InternalOrder.new {
+                                startDate = it.startDate
+                                endDate = it.endDate
+                                expectedEndDate = it.expectedEndDate
                                 productCode = it.productCode
                                 productQuantity = it.productQuantity
                                 rawCode = it.rawCode
                                 rawQuantity = it.rawQuantity
                                 operator = it.operator
                                 externalTreatments = it.externalTreatments
-                                startDate = it.startDate
-                                endDate = it.endDate
-                                expectedEndDate = it.expectedEndDate
                                 orderPrincipal = newOrder.id
                                 setProcesses(it.processes ?: emptyList<String>())
                             }

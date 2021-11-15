@@ -18,7 +18,7 @@
     <div style="margin-top: 12px">
       <div *ngFor="let internal of order.internalOrders"
            class="border" [ngStyle]="{'border-color': '#000000'}">
-        <div style="display: grid; grid-template-columns: 40px auto">
+        <div style="display: grid; grid-template-columns: 40px auto 40px">
           <div>
             <mat-icon [ngStyle]="{'color': '#000000'}">inventory_2</mat-icon>
           </div>
@@ -34,6 +34,28 @@
             <div>Data di inizio: {{internal.startDate ? getOrderDate(internal.startDate) : "Data non impostata"}}</div>
             <div>Data di fine stimata: {{internal.expectedEndDate ? getOrderDate(internal.expectedEndDate) : "Data non impostata"}}</div>
             <div>Data di fine: {{internal.endDate ? getOrderDate(internal.endDate) : "Data non impostata"}}</div>
+          </div>
+          <div>
+            <span *ngIf="fromList">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Azioni rapide">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+
+              <button mat-menu-item [disabled]="!internal.endDate || !internal.startDate" (click)="resetProduction(internal)">
+                <mat-icon>restart_alt</mat-icon>
+                <span>Reimposta date prodotto</span>
+              </button>
+              <button mat-menu-item [disabled]="internal.startDate!==null" (click)="startProduction(internal)">
+                <mat-icon>schedule</mat-icon>
+                <span>Inizia produzione</span>
+              </button>
+              <button mat-menu-item [disabled]="internal.endDate!==null" (click)="endProduction(internal)">
+                <mat-icon>done</mat-icon>
+                <span>Termina produzione</span>
+              </button>
+            </mat-menu>
+            </span>
           </div>
         </div>
       </div>

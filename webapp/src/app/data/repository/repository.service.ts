@@ -105,11 +105,23 @@ export class RepositoryService {
     return this.datasource.getPdf(id)
   }
 
+  getExcel() {
+    return this.datasource.getExcel()
+  }
+
   getInteralOrderById(id: string): Observable<InternalOrder | null> {
     return this.datasource.getInteralOrderById(id)
   }
 
-  setInternalDate(id: string, action: string, date: number): Observable<boolean>{
-    return this.datasource.setInternalDate(id,action,date);
+  setInternalDate(id: string, action: string, date: number): Observable<boolean> {
+    return this.datasource.setInternalDate(id, action, date);
+  }
+
+  removeProcess(value: string): Observable<boolean> {
+    return this.datasource.removeProcess(value)
+  }
+
+  addProcess(value: string): Observable<boolean> {
+    return this.datasource.addProcess(value)
   }
 }

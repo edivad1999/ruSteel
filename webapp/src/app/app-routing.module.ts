@@ -7,6 +7,7 @@ import {LogoutComponent} from './logout/logout.component';
 import {NewOrderComponent} from "./components/orders/new-order/new-order.component";
 import {SettingsComponent} from "./components/settings/settings.component";
 import {QrComponent} from "./components/qr/qr.component";
+import {ProcessesComponent} from "./components/processes/processes.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'prefix'},
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path: 'orders/new', component: NewOrderComponent, canActivate: [AuthGuard]},
   {path: 'orders/edit/:id', component: NewOrderComponent, canActivate: [AuthGuard]},
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
+  {path: 'processes', component: ProcessesComponent, canActivate: [AuthGuard]},
   {path: 'qr', component: QrComponent, canActivate: [AuthGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
 

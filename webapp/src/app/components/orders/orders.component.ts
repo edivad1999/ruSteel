@@ -4,6 +4,7 @@ import {SubscriberContextComponent} from "../../utils/subscriber-context.compone
 import {RepositoryService} from "../../data/repository/repository.service";
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {saveAs} from "file-saver";
 
 @Component({
   selector: 'app-orders',
@@ -34,7 +35,14 @@ export class OrdersComponent extends SubscriberContextComponent implements OnIni
       }
     )
   }
-
+  downloadExcel() {
+    this.subscribeWithContext(
+      this.repo.getExcel(),
+      value => {
+        saveAs(value, `fabbisogni.xlsx`)
+      }
+    )
+  }
   goToNewOrder() {
     this.router.navigateByUrl('/orders/new')
   }
