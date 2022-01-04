@@ -20,11 +20,8 @@ import org.kodein.di.direct
 import org.kodein.di.instance
 import org.kodein.di.ktor.DIFeature
 import org.kodein.di.ktor.di
+import routes.*
 import routes.auth.*
-import routes.autoCompletionApi
-import routes.backupApi
-import routes.orderApi
-import routes.processesApi
 
 
 fun Application.managerModule() {
@@ -56,7 +53,7 @@ fun Application.managerModule() {
                 verifier(JwtConfig.verifier)
                 realm = "ruSteel"
                 validate {
-                    credentialVerifierJWT.verify(it)
+                    credentialVerifierJWT.verify(role, it)
                 }
             }
         }
@@ -76,8 +73,9 @@ fun Application.managerModule() {
             orderApi()
             processesApi()
             backupApi()
-//            userAdminApi()
+            userAdminApi()
             autoCompletionApi()
+            operatorApi()
         }
     }
 
@@ -119,12 +117,26 @@ fun Application.initDb() = launch {
         val admin = UserAuth.find {
             UserAuthTable.username eq "admin"
         }
+
+        val rimosso = UserAuth.find {
+            UserAuthTable.username eq "RIMOSSO"
+        }
+
         if (admin.empty()) {
             UserAuth.new {
                 username = "admin"
                 hashPass = digester.digest("password")
+                role = Role.ADMIN.name
             }
         }
+        if (rimosso.empty()) {
+            UserAuth.new {
+                username = "RIMOSSO"
+                hashPass = digester.digest("r3m0vedPassw0rD")
+                role = Role.ADMIN.name
+            }
+        }
+
     }
 }
 

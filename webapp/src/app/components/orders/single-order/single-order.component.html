@@ -18,7 +18,7 @@
     <div style="margin-top: 12px">
       <div *ngFor="let internal of order.internalOrders"
            class="border" [ngStyle]="{'border-color': '#000000'}">
-        <div style="display: grid; grid-template-columns: 40px auto 40px">
+        <div style="display: grid; grid-template-columns: 40px auto 80px 40px">
           <div>
             <mat-icon [ngStyle]="{'color': '#000000'}">inventory_2</mat-icon>
           </div>
@@ -30,10 +30,28 @@
             Grezzo:{{internal.rawCode}} | quantità: {{internal.rawQuantity}}<br>
             Lavorazioni: {{internal.processes.join("-> ")}}<br>
             Lavorazioni esterne: {{internal.externalTreatments}}<br>
-            Operatore:{{internal.operator}}
+            Operatore: {{internal.operator ? internal.operator : "Non inserito"}}
             <div>Data di inizio: {{internal.startDate ? getOrderDate(internal.startDate) : "Data non impostata"}}</div>
             <div>Data di fine stimata: {{internal.expectedEndDate ? getOrderDate(internal.expectedEndDate) : "Data non impostata"}}</div>
             <div>Data di fine: {{internal.endDate ? getOrderDate(internal.endDate) : "Data non impostata"}}</div>
+
+          </div>
+          <div *ngIf="fromList">
+            <mat-form-field style="width: 80px">
+              <mat-label>Priorità</mat-label>
+              <mat-select [(ngModel)]="internal.priority" #selectPriority (selectionChange)="this.changedPrios.push(internal.id)">
+                <mat-option [value]="null">Non impostare</mat-option>
+                <mat-option [value]="1">1</mat-option>
+                <mat-option [value]="2">2</mat-option>
+                <mat-option [value]="3">3</mat-option>
+                <mat-option [value]="4">4</mat-option>
+                <mat-option [value]="5">5</mat-option>
+              </mat-select>
+              <button style="font-size: 24px" mat-icon-button matSuffix *ngIf="this.changedPrios.includes(internal.id)" (click)="setPriority($event, internal, selectPriority.value)">
+                <mat-icon>save</mat-icon>
+              </button>
+
+            </mat-form-field>
           </div>
           <div>
             <span *ngIf="fromList">
@@ -47,7 +65,7 @@
                 <span>Reimposta date prodotto</span>
               </button>
               <button mat-menu-item [disabled]="internal.startDate!==null" (click)="startProduction(internal)">
-                <mat-icon>schedule</mat-icon>
+                <mat-icon>play_arrow</mat-icon>
                 <span>Inizia produzione</span>
               </button>
               <button mat-menu-item [disabled]="internal.endDate!==null" (click)="endProduction(internal)">
@@ -58,6 +76,7 @@
             </span>
           </div>
         </div>
+
       </div>
     </div>
     <div *ngIf="fromList" style="display: flex; width: 100%; justify-content: space-between">

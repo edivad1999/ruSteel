@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {DatasourceService} from '../../core/datasource/datasource.service';
 import {Observable, of, ReplaySubject} from 'rxjs';
-import {AuthState, Completion, CreateOrderRequest, InternalOrder, Order} from '../../domain/model/data';
+import {AuthState, Completion, CreateOrderRequest, EditProductionDate, InternalOrder, OperatorData, OperatorPasswordChangeRequest, OperatorRequest, Order, Role} from '../../domain/model/data';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthTokenData} from '../requests';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
@@ -11,7 +11,23 @@ import {JwtHandlerService} from '../../utils/jwt-handler.service';
 })
 export class RepositoryService {
   authenticationStateFlow = new ReplaySubject<AuthState>(1);
+  role = new ReplaySubject<Role>(1);
 
+
+  myRole(): Observable<Role> {
+    return this.datasource.myRole()
+      .pipe(
+        map(t => {
+          this.role.next(t);
+          return t
+        }))
+
+
+  }
+
+  getOperatorOrders(username?: string): Observable<Order[]> {
+    return this.datasource.getOperatorOrders(username)
+  }
 
   constructor(private datasource: DatasourceService,
               private jwtHandlerService: JwtHandlerService
@@ -55,12 +71,12 @@ export class RepositoryService {
 
   }
 
-  editOrderbyId(id: string, order: Order): Observable<Order> {
+  editOrderbyId(id: string, order: Order): Observable<Order | null> {
     return this.datasource.editOrderbyId(id, order)
 
   }
 
-  newOrder(order: CreateOrderRequest): Observable<Order> {
+  newOrder(order: CreateOrderRequest): Observable<Order | null> {
     return this.datasource.newOrder(order)
 
   }
@@ -123,5 +139,35 @@ export class RepositoryService {
 
   addProcess(value: string): Observable<boolean> {
     return this.datasource.addProcess(value)
+  }
+
+  newOperator(op: OperatorRequest): Observable<boolean> {
+    return this.datasource.newOperator(op)
+  }
+
+  changeOperatorPass(op: OperatorPasswordChangeRequest): Observable<boolean> {
+    return this.datasource.changeOperatorPass(op)
+
+  }
+
+  setOperatorInternal(id: string, operator: string): Observable<boolean> {
+    return this.datasource.setOperatorInternal(id, operator)
+
+  }
+
+  getOperators(): Observable<OperatorData[]> {
+    return this.datasource.getOperators()
+  }
+
+  removeOperator(username: string) {
+    return this.datasource.removeOperator(username)
+  }
+
+  editInternalOrderState(internalRequest: EditProductionDate): Observable<InternalOrder | null> {
+    return this.datasource.editInternalOrderState(internalRequest)
+  }
+
+  whoAmI():Observable<string> {
+    return this.datasource.whoAmI()
   }
 }

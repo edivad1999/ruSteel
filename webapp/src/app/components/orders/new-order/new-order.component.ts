@@ -120,12 +120,14 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
         productQuantity: this.fb.control(null, [Validators.required]),
         rawCode: this.fb.control(null, [Validators.required]),
         rawQuantity: this.fb.control(null, [Validators.required]),
-        operator: this.fb.control(null, [Validators.required]),
+        operator: this.fb.control(null, []),
         processes: this.fb.array([]),
         externalTreatments: this.fb.control(null),
         startDate: this.fb.control(null),
         endDate: this.fb.control(null),
         expectedEndDate: this.fb.control(null),
+        priority: this.fb.control(null),
+
       })
     )
   }
@@ -157,12 +159,13 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
               productQuantity: this.fb.control(internal.productQuantity, [Validators.required]),
               rawCode: this.fb.control(internal.rawCode, [Validators.required]),
               rawQuantity: this.fb.control(internal.rawQuantity, [Validators.required]),
-              operator: this.fb.control(internal.operator, [Validators.required]),
+              operator: this.fb.control(internal.operator),
               processes: this.fb.array(internal.processes),
               externalTreatments: this.fb.control(internal.externalTreatments),
               startDate: this.fb.control(internal.startDate ? this.convertToInputDateCompatible(new Date(internal.startDate)) : null),
               endDate: this.fb.control(internal.endDate ? this.convertToInputDateCompatible(new Date(internal.endDate)) : null),
               expectedEndDate: this.fb.control(internal.expectedEndDate ? this.convertToInputDateCompatible(new Date(internal.expectedEndDate)) : null),
+              priority: this.fb.control(internal.priority),
 
             })
           )
@@ -174,7 +177,6 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
   }
 
   getControlFromAbstract(a: AbstractControl | null) {
-    console.log(this.processes)
     return a as FormControl
   }
 
@@ -241,7 +243,8 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
           externalTreatments: control.value.externalTreatments,
           startDate: this.parseDateToInstant(control.value.startDate),
           endDate: this.parseDateToInstant(control.value.endDate),
-          expectedEndDate: this.parseDateToInstant(control.value.expectedEndDate)
+          expectedEndDate: this.parseDateToInstant(control.value.expectedEndDate),
+          priority: control.value.priority
         }
         return internal
       }
@@ -279,6 +282,7 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
           productCode: internal.productCode,
           productQuantity: internal.productQuantity,
           processes: internal.processes,
+          priority: internal.priority
         }
         return createInternal
       }),
@@ -288,6 +292,9 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
       if (response) {
         this.snackbar.open("Dati caricati correttamente", "chiudi")
         this.router.navigateByUrl('/home')
+
+      } else {
+        this.snackbar.open("Problema durante il salvataggio", "chiudi")
 
       }
     })
@@ -318,6 +325,9 @@ export class NewOrderComponent extends SubscriberContextComponent implements OnI
       if (response) {
         this.snackbar.open("Dati caricati correttamente", "chiudi")
         this.router.navigateByUrl('/home')
+      } else {
+        this.snackbar.open("Problema durante il salvataggio", "chiudi")
+
       }
     })
   }

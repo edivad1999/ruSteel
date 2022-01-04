@@ -1,1 +1,6 @@
-<app-orders></app-orders>
+<div *ngIf="role!==undefined && role.valueOf()===admin.valueOf()">
+  <app-orders></app-orders>
+</div>
+<div *ngIf="role!==undefined && role.valueOf()===user.valueOf()">
+  <app-operator-orders></app-operator-orders>
+</div>

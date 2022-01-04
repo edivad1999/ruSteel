@@ -44,17 +44,17 @@ class SHA256Digester : PasswordDigester {
 }
 
 interface JWTCredentialsVerifier {
-    fun verify(jwtCredential: JWTCredential): BasePrincipal?
+    fun verify(role: Role, jwtCredential: JWTCredential): BasePrincipal?
 
-    operator fun invoke(jwtCredential: JWTCredential) =
-        verify(jwtCredential)
+    operator fun invoke(role: Role, jwtCredential: JWTCredential) =
+        verify(role, jwtCredential)
 }
 
 class MyJWTCredentialVerifier(override val di: DI) : JWTCredentialsVerifier, DIAware {
 
-    override fun verify(jwtCredential: JWTCredential): BasePrincipal? {
+    override fun verify(role: Role, jwtCredential: JWTCredential): BasePrincipal? {
         val username = jwtCredential.payload.getClaim("username").asString()
-        val role = Role.valueOf(jwtCredential.payload.getClaim("role").asString())
+        val roleFromJwt = Role.valueOf(jwtCredential.payload.getClaim("role").asString())
         val expiresAt = jwtCredential.payload.expiresAt.toInstant()
         if (expiresAt.isBefore(Clock.System.now().toJavaInstant())) return null
         val db: Database by instance()
@@ -63,7 +63,8 @@ class MyJWTCredentialVerifier(override val di: DI) : JWTCredentialsVerifier, DIA
                 UserAuthTable.username eq username
             }.firstOrNull()
         }
-        return if (user == null) null else BasePrincipal(user.username, role)
+        //fixed fabrizio inconsistency that doesnt checks for role 
+        return if (user != null && user.getRole() >= role) BasePrincipal(user.username, role) else null
     }
 
 }

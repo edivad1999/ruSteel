@@ -10,17 +10,19 @@ import kotlinx.serialization.Serializable
 import model.dao.InternalOrder
 import model.dao.Order
 import model.dao.Process
+import model.dao.UserAuth
+import model.tables.InternalOrdersTable
+import model.tables.UserAuthTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 import routes.auth.Role
 import utils.ExcelUtils
-import utils.OrderPDF
 import java.util.*
 
 fun Route.orderApi() = route("order") {
 
     val db: Database by instance()
-    authenticate(Role.USER) {
+    authenticate(Role.ADMIN) {
         get("id") {
             val id = call.parameters["id"]!!.toUUID()
             val result = transaction(db) {
@@ -35,7 +37,7 @@ fun Route.orderApi() = route("order") {
         }
         get("all") {
             val result = transaction(db) {
-                Order.all().sortedBy { order: Order -> order.creationTime }.map {
+                Order.all().sortedByDescending { order: Order -> order.creationTime }.map {
                     it.serialize()
                 }
             }
@@ -119,6 +121,7 @@ fun Route.orderApi() = route("order") {
                         internalOrder.expectedEndDate = it.expectedEndDate
                         internalOrder.orderPrincipal = order.id
                         internalOrder.setProcesses(it.processes ?: emptyList<String>())
+                        internalOrder.priority = it.priority
                     } else {
                         InternalOrder.new {
                             productCode = it.productCode
@@ -131,6 +134,8 @@ fun Route.orderApi() = route("order") {
                             startDate = it.startDate
                             endDate = it.endDate
                             expectedEndDate = it.expectedEndDate
+                            priority = it.priority
+
                             setProcesses(it.processes ?: emptyList<String>())
                         }
                     }
@@ -150,6 +155,25 @@ fun Route.orderApi() = route("order") {
 
 
             }
+        }
+
+        get("setOperatorInternal") {
+            val internalId = UUID.fromString(call.parameters["id"]!!)
+            val operator = call.parameters["operator"]!!
+            transaction(db) {
+                UserAuth.find {
+                    UserAuthTable.username eq operator
+                }.firstOrNull().apply {
+                    if (this != null) {
+                        InternalOrder.findById(internalId).let {
+                            if (it != null) {
+                                it.operator = this.username
+                            }
+                        }
+                    }
+                }
+            }
+            call.respond(HttpStatusCode.OK)
         }
         get("internal") {
             val id = UUID.fromString(call.parameters["id"]!!)
@@ -175,22 +199,24 @@ fun Route.orderApi() = route("order") {
                 call.respond(HttpStatusCode.OK)
             }
         }
-        get("qr") {
-            val id = UUID.fromString(call.parameters["id"]!!)
-            transaction(db) {
-                Order.findById(id)!!.serialize()
-            }.let { order ->
-                val orderPDF = OrderPDF(order)
-                call.response.header(
-                    HttpHeaders.ContentDisposition,
-                    ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, "orderPdf${order.id.toString()}")
-                        .toString()
-                )
-                val file = orderPDF.generatePdf()
 
-                call.respondFile(file)
+        get("operators") {
+            transaction(db) {
+                UserAuth.all().toList().filter { it.getRole() === Role.USER }.map { user ->
+                    val internal = InternalOrder.find { InternalOrdersTable.operator eq user.username }.toList()
+                    OperatorData(
+                        name = user.username,
+                        assignedOrders = internal.size,
+                        completedOrders = internal.count { it.endDate != null },
+                        inProgressOrders = internal.count { it.startDate != null && it.endDate == null },
+                        notStartedOrders = internal.count { it.startDate == null && it.endDate == null },
+                    )
+                }
+            }.apply {
+                call.respond(this.sortedBy { it.name })
             }
         }
+
         post("new") {
             val request = call.receive<CreateSerializableOrderRequest>()
 
@@ -218,6 +244,7 @@ fun Route.orderApi() = route("order") {
                         operator = it.operator
                         externalTreatments = it.externalTreatments
                         orderPrincipal = newOrder.id
+                        priority = it.priority
                         setProcesses(it.processes ?: emptyList<String>())
                     }
                 }
@@ -237,7 +264,7 @@ fun Route.orderApi() = route("order") {
     }
 }
 
-private fun String.toUUID(): UUID {
+public fun String.toUUID(): UUID {
     return try {
         UUID.fromString(this)
     } catch (e: Exception) {
@@ -256,6 +283,7 @@ fun Order.serialize(): SerializableOrder {
         client = this.client,
         clientOrderCode = this.clientOrderCode,
 
+        creationTime = this.creationTime,
         internalOrders = this.internalOrders.toList().map { it.serialize() },
     )
 }
@@ -273,7 +301,9 @@ fun InternalOrder.serialize(): SerializableInternalOrder {
         endDate = this.endDate,
         expectedEndDate = this.expectedEndDate,
         processes = this.getProcesses(),
-        externalTreatments = this.externalTreatments
+        externalTreatments = this.externalTreatments,
+        priority = this.priority
+
     )
 }
 
@@ -286,7 +316,7 @@ data class SerializableOrder(
     val commission: String,
     val client: String,
     val clientOrderCode: String,
-
+    val creationTime: Long? = null,
     val internalOrders: List<SerializableInternalOrder>,
 )
 
@@ -304,12 +334,13 @@ data class SerializableInternalOrder(
     val productQuantity: Int,
     val rawCode: String,
     val rawQuantity: Int,
-    val operator: String,
+    val operator: String? = null,
     val processes: List<String>? = emptyList<String>(),
     val startDate: Long? = null,
     val endDate: Long? = null,
     val expectedEndDate: Long? = null,
     val externalTreatments: String? = null,
+    val priority: Int? = null,
 
 
     )
@@ -332,12 +363,13 @@ data class CreateSerializableInternalOrderRequest(
     val productQuantity: Int,
     val rawCode: String,
     val rawQuantity: Int,
-    val operator: String,
+    val operator: String? = null,
     val processes: List<String>? = emptyList<String>(),
     val startDate: Long? = null,
     val endDate: Long? = null,
     val expectedEndDate: Long? = null,
     val externalTreatments: String? = null,
+    val priority: Int? = null,
 
 
     )
@@ -347,3 +379,16 @@ data class SerializableProcess(
     val id: Int,
     val process: String,
 )
+
+@Serializable
+data class OperatorData(
+
+    val name: String,
+    val assignedOrders: Int,
+    val completedOrders: Int,
+    val inProgressOrders: Int,
+    val notStartedOrders: Int,
+)
+
+
+

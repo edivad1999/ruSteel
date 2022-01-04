@@ -4,6 +4,11 @@ export interface ErrorMessageResponse {
 
 export type AuthState = 'AUTHENTICATING' | 'AUTHENTICATED' | 'UNAUTHENTICATED';
 
+export enum Role {
+  USER,
+  ADMIN
+
+}
 
 export interface Order {
   id: string;//when creating or editing id will be ignored
@@ -13,7 +18,7 @@ export interface Order {
   commission: string;
   client: string;
   clientOrderCode: string;
-
+  creationTime?: number;
   internalOrders: InternalOrder[];
 }
 
@@ -29,7 +34,14 @@ export interface InternalOrder {
   startDate: number | null;
   endDate: number | null;
   expectedEndDate: number | null;
+  priority: number | null
 
+
+}
+
+export interface EditProductionDate {
+  id: string,
+  action: string
 }
 
 export interface CreateOrderRequest {
@@ -54,6 +66,7 @@ export interface CreateInternalOrderRequest {
   startDate: number | null;
   endDate: number | null;
   expectedEndDate: number | null;
+  priority: number | null
 
 }
 
@@ -76,4 +89,25 @@ export interface Completion {
   rawCodeColumn: string[]
   operatorColumn: string[]
   externalTreatmentsColumn: string[]
+}
+
+
+export interface OperatorRequest {
+  username: string,
+  password: string,
+}
+
+
+export interface OperatorPasswordChangeRequest {
+  username: string,
+  new: string,
+}
+
+export interface OperatorData {
+  name: string,
+  assignedOrders: number,
+  completedOrders: number,
+  inProgressOrders: number,
+  notStartedOrders: number,
+
 }

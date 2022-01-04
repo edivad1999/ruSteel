@@ -6,6 +6,8 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.serialization.Serializable
 import model.dao.Order
+import model.dao.UserAuth
+import model.tables.UserAuthTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 import routes.auth.Role
@@ -14,7 +16,7 @@ fun Route.autoCompletionApi() = route("completion") {
     val db: Database by instance()
     authenticate(Role.USER) {
         get("all") {
-            val result =transaction(db) {
+            val result = transaction(db) {
                 val completion: Completion = Completion(
                     productColumn = mutableSetOf(),
                     commissionColumn = mutableSetOf(),
@@ -27,7 +29,9 @@ fun Route.autoCompletionApi() = route("completion") {
                 )
                 Order.all().forEach {
                     completion.populateCompletion(it.serialize())
+
                 }
+                completion.operatorColumn.addAll(UserAuth.find { UserAuthTable.role eq "USER" }.map { it.username }.toList())
                 completion
             }
             call.respond(result)
@@ -44,7 +48,6 @@ fun Completion.populateCompletion(serializableOrder: SerializableOrder) {
     serializableOrder.internalOrders.forEach {
         this.productCodeColumn.add(it.productCode)
         this.rawCodeColumn.add(it.rawCode)
-        this.operatorColumn.add(it.operator)
         if (it.externalTreatments != null) this.externalTreatmentsColumn.add(it.externalTreatments)
     }
 

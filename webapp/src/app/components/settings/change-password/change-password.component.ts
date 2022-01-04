@@ -54,8 +54,8 @@ export class ChangePasswordComponent extends SubscriberContextComponent implemen
     this.changingPassword = true;
     this.subscribeWithContext(
       this.repo.changePassword(
-        btoa(this.oldPasswordControl.value),
-        btoa(this.newPasswordControl.value)
+        this.oldPasswordControl.value,
+        this.newPasswordControl.value
       ).pipe(
         catchError(err => {
           console.error(err);

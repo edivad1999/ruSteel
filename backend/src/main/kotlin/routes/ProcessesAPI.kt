@@ -13,7 +13,7 @@ import routes.auth.Role
 fun Route.processesApi() = route("process") {
     val db: Database by instance()
 
-    authenticate(Role.USER) {
+    authenticate(Role.ADMIN) {
         get("all") {
             val result = transaction(db) {
                 Process.all().map { it.process }.sorted()

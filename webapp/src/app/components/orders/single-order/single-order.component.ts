@@ -6,6 +6,7 @@ import {SubscriberContextComponent} from "../../../utils/subscriber-context.comp
 import {RepositoryService} from "../../../data/repository/repository.service";
 import {catchError} from "rxjs/operators";
 import {of} from "rxjs";
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-single-order',
@@ -16,6 +17,7 @@ export class SingleOrderComponent extends SubscriberContextComponent implements 
   @Input() order!: Order
   @Input() fromList!: Boolean
   @Output() deleteId: EventEmitter<string> = new EventEmitter<string>()
+  changedPrios: string[] = []
 
   constructor(private router: Router, private repo: RepositoryService) {
     super()
@@ -103,4 +105,22 @@ export class SingleOrderComponent extends SubscriberContextComponent implements 
       )
     )
   }
+
+  setPriority(event: MouseEvent, internal: InternalOrder, value: number | null) {
+    event.stopPropagation()
+    const oldPriority = internal.priority
+    internal.priority = value
+    this.subscribeWithContext(
+      this.repo.editOrderbyId(this.order.id, this.order).pipe(
+        catchError(err => {
+          internal.priority = oldPriority
+          return of(true)
+        })
+      )
+    )
+    this.changedPrios = this.changedPrios.filter(it => it !== internal.id)
+
+  }
+
+
 }

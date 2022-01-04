@@ -4,11 +4,35 @@
 </div>
 <mat-tab-group *ngIf="orders && processes">
   <mat-tab label="Visualizzazione Lista">
+
     <lib-central-column>
       <div>
         <button mat-raised-button (click)="goToNewOrder()" color="primary">
           Crea nuovo ordine
         </button>
+      </div>
+      <div style="display: flex; width: 100%; justify-content: flex-end">
+
+        <mat-form-field>
+          <mat-label>
+            Ordina per
+          </mat-label>
+          <mat-select [formControl]="filter">
+            <mat-option *ngFor="let option of this.sortedBy" [value]="option">
+              {{translateSortedByValue(option)}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            Verso
+          </mat-label>
+          <mat-select [formControl]="sortedDirection">
+            <mat-option [value]="'DESC'">Decrescente</mat-option>
+            <mat-option [value]="'ASC'">Crescente</mat-option>
+          </mat-select>
+        </mat-form-field>
+
       </div>
       <div *ngIf="orders.length>0">
         <div *ngFor="let order of orders" style="margin-top: 6px">
@@ -27,6 +51,6 @@
     </lib-central-column>
   </mat-tab>
   <mat-tab label="Visualizzazione tabellare">
-    <app-table-orders [processes]="processes!" [orders]="orders" ></app-table-orders>
+    <app-table-orders [processes]="processes!" [orders]="orders"></app-table-orders>
   </mat-tab>
 </mat-tab-group>

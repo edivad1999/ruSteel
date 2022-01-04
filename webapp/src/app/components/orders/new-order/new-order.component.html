@@ -84,7 +84,7 @@
         <div style="display: flex;flex-direction: column;">
           <div style="display: flex; justify-content: flex-start  ">
             <button color="accent" mat-raised-button (click)="addNewInternalOrder()">
-              Aggiungi nuovo prodotto intenrno
+              Aggiungi nuovo prodotto interno
             </button>
           </div>
           <div *ngIf=" internalOrdersFormArray.controls.length==0">
@@ -95,6 +95,15 @@
               <div *ngFor="let internalControl of internalOrdersFormArray.controls; let internalIndex=index"
                    [formGroup]="castToFormGroup(internalControl)">
                 <mat-step [stepControl]="castToFormGroup(internalControl)">
+                  <div>
+                    <mat-form-field>
+                      <mat-label>
+                        Imposta la priorità
+                      </mat-label>
+                      <input type="number" min="0" max="5" matInput formControlName="priority">
+                      <mat-error>Il valore deve essere compreso tra 0 e 5</mat-error>
+                    </mat-form-field>
+                  </div>
                   <div>
                     <mat-form-field style="margin-right: 18px">
                       <mat-label>Codice prodotto interno</mat-label>
@@ -137,12 +146,14 @@
                   <div>
                     <mat-form-field style="margin-right: 18px">
                       <mat-label>Operatore</mat-label>
-                      <input matInput formControlName="operator" [matAutocomplete]="operatorCompletion">
-                      <mat-autocomplete autoActiveFirstOption #operatorCompletion="matAutocomplete">
-                        <mat-option *ngFor="let option of getFilteredCompletion(getControlFromAbstract(castToFormGroup(internalControl).get('operator')),completion.operatorColumn) " [value]="option">
+                      <mat-select matInput formControlName="operator">
+                        <mat-option [value]="null">
+                          ---
+                        </mat-option>
+                        <mat-option *ngFor="let option of completion.operatorColumn " [value]="option">
                           {{option}}
                         </mat-option>
-                      </mat-autocomplete>
+                      </mat-select>
                       <mat-error>Il campo non può essere vuoto</mat-error>
                     </mat-form-field>
 
@@ -162,28 +173,28 @@
                   <div>
 
 
-                      <mat-chip-list #chipList  aria-label="Video keywords" multiple>
-                        <mat-chip #chip
-                          *ngFor="let process of processes"
-                          [selected]="getInternalProcessesFormArray(internalControl).value.includes(process)"
-                          [value]="process"
-                          (click)="selectionChanged(internalControl,process,getInternalProcessesFormArray(internalControl).value.includes(process))">
-<!--                          (removed)="removeProcess(internalControl,process)">-->
-                          {{process}}
-                        </mat-chip>
-                      </mat-chip-list>
+                    <mat-chip-list #chipList multiple>
+                      <mat-chip #chip
+                                *ngFor="let process of processes"
+                                [selected]="getInternalProcessesFormArray(internalControl).value.includes(process)"
+                                [value]="process"
+                                (click)="selectionChanged(internalControl,process,getInternalProcessesFormArray(internalControl).value.includes(process))">
+                        <!--                          (removed)="removeProcess(internalControl,process)">-->
+                        {{process}}
+                      </mat-chip>
+                    </mat-chip-list>
 
-<!--                    <div>-->
-<!--                      <mat-form-field>-->
-<!--                        <mat-label>Inserisci la lavorazione</mat-label>-->
-<!--                        <mat-select #select (selectionChange)="selectionChanged(internalControl,select)">-->
-<!--                          <mat-option *ngFor="let process of processes" [value]="process">-->
-<!--                            {{process}}-->
-<!--                          </mat-option>-->
-<!--                        </mat-select>-->
-<!--                      </mat-form-field>-->
-<!--                    </div>-->
-<!--                    -->
+                    <!--                    <div>-->
+                    <!--                      <mat-form-field>-->
+                    <!--                        <mat-label>Inserisci la lavorazione</mat-label>-->
+                    <!--                        <mat-select #select (selectionChange)="selectionChanged(internalControl,select)">-->
+                    <!--                          <mat-option *ngFor="let process of processes" [value]="process">-->
+                    <!--                            {{process}}-->
+                    <!--                          </mat-option>-->
+                    <!--                        </mat-select>-->
+                    <!--                      </mat-form-field>-->
+                    <!--                    </div>-->
+                    <!--                    -->
 
 
                     <mat-form-field>

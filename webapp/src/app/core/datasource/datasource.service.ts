@@ -4,8 +4,19 @@ import {catchError, map} from 'rxjs/operators';
 import {JwtHandlerService} from '../../utils/jwt-handler.service';
 import {Endpoints} from '../endpoints/endpoints';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {AuthTokenData} from '../../data/requests';
-import {Completion, CreateOrderRequest, InternalOrder, Order, PasswordChangeRequest} from "../../domain/model/data";
+import {AuthTokenData, SimpleStringResponse} from '../../data/requests';
+import {
+  Completion,
+  CreateOrderRequest,
+  EditProductionDate,
+  InternalOrder,
+  OperatorData,
+  OperatorPasswordChangeRequest,
+  OperatorRequest,
+  Order,
+  PasswordChangeRequest,
+  Role
+} from "../../domain/model/data";
 
 
 @Injectable({
@@ -54,7 +65,7 @@ export class DatasourceService {
     )
   }
 
-  editOrderbyId(id: string, order: Order): Observable<Order> {
+  editOrderbyId(id: string, order: Order): Observable<Order | null> {
     return this.httpClient.post(
       this.endpoints.editOrderbyIdUrl(id),
       order,
@@ -62,11 +73,14 @@ export class DatasourceService {
     ).pipe(
       map(
         response => response.body as Order
-      )
+      ), catchError(err => {
+        console.error(err);
+        return of(null);
+      })
     )
   }
 
-  newOrder(order: CreateOrderRequest): Observable<Order> {
+  newOrder(order: CreateOrderRequest): Observable<Order | null> {
     return this.httpClient.post(
       this.endpoints.newOrderUrl(),
       order,
@@ -74,7 +88,11 @@ export class DatasourceService {
     ).pipe(
       map(
         response => response.body as Order
-      )
+      ),
+      catchError(err => {
+        console.error(err);
+        return of(null);
+      })
     )
   }
 
@@ -120,8 +138,8 @@ export class DatasourceService {
 
   changePassword(old: string, newp: string) {
     const req: PasswordChangeRequest = {
-      old: old,
-      new: newp
+      old: btoa(old),
+      new: btoa(newp)
     }
     return this.httpClient.post(
       this.endpoints.changePasswordUrl(),
@@ -183,7 +201,7 @@ export class DatasourceService {
     )
   }
 
-  removeProcess(value: string):Observable<boolean> {
+  removeProcess(value: string): Observable<boolean> {
     return this.httpClient.get(
       this.endpoints.removeProcessUrl(value),
       {observe: "response"}
@@ -206,5 +224,117 @@ export class DatasourceService {
         console.error(err);
         return of(false);
       })
-    )  }
+    )
+  }
+
+  newOperator(op: OperatorRequest): Observable<boolean> {
+    return this.httpClient.post(
+      this.endpoints.newOperatorUrl(),
+      op,
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )
+  }
+
+  changeOperatorPass(op: OperatorPasswordChangeRequest): Observable<boolean> {
+    return this.httpClient.post(
+      this.endpoints.changeOperatorPasswordUrl(),
+      op,
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )
+  }
+
+  setOperatorInternal(id: string, operator: string): Observable<boolean> {
+    return this.httpClient.get(
+      this.endpoints.setOperatorInternalUrl(id, operator),
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )
+  }
+
+  getOperators(): Observable<OperatorData[]> {
+    return this.httpClient.get(
+      this.endpoints.getOperatorsUrl(),
+      {observe: "response"}
+    ).pipe(
+      map(it => it.body as OperatorData[])
+    )
+  }
+
+  removeOperator(username: string): Observable<boolean> {
+    return this.httpClient.get(
+      this.endpoints.removeOperatorUrl(username),
+      {observe: "response"}
+    ).pipe(
+      map((response) => response.status === 200),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    )
+  }
+
+  myRole(): Observable<Role> {
+    return this.httpClient.get(
+      this.endpoints.myRoleUrl(),
+      {observe: "response"}
+    ).pipe(
+      map(it => {
+        const role = it.body as SimpleStringResponse
+        if (role.responseString === "ADMIN") return Role.ADMIN
+        else return Role.USER
+      })
+    )
+  }
+
+  getOperatorOrders(username?: string): Observable<Order[]> {
+    return this.httpClient.get(
+      this.endpoints.getOperatorOrdersUrl(username),
+      {observe: "response"}
+    ).pipe(
+      map(it => it.body as Order[]))
+  }
+
+  editInternalOrderState(internalRequest: EditProductionDate): Observable<InternalOrder | null> {
+    return this.httpClient.post(
+      this.endpoints.editInternalOrderStateUrl(),
+      internalRequest,
+      {observe: "response"}
+    ).pipe(
+      map(
+        response => response.body as InternalOrder),
+      catchError(err => {
+        console.error(err);
+        return of(null);
+      })
+    )
+  }
+
+  whoAmI(): Observable<string> {
+    return this.httpClient.get(
+      this.endpoints.whoAmIUrl(),
+      {observe: "response"}
+    ).pipe(
+      map(
+        response => {
+          return (response.body as SimpleStringResponse).responseString
+        })
+    )
+  }
 }

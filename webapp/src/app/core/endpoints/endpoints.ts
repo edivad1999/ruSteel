@@ -73,7 +73,7 @@ export class Endpoints {
   }
 
   getPdfUrl(id: string) {
-    return this.buildUrl(`order/qr?id=${id}`);
+    return this.buildUrl(`operator/qr?id=${id}`);
   }
 
   getExcelUrl() {
@@ -106,5 +106,42 @@ export class Endpoints {
 
   addProcessUrl(value: string) {
     return this.buildUrl(`process/new?name=${value}`)
+  }
+
+  newOperatorUrl() {
+    return this.buildUrl(`admin/newOperator`)
+  }
+
+  removeOperatorUrl(username: string) {
+    return this.buildUrl(`admin/removeOperator?username=${username}`)
+  }
+
+  changeOperatorPasswordUrl() {
+    return this.buildUrl(`admin/changeOperatorPass`)
+  }
+
+  setOperatorInternalUrl(id: string, operator: string) {
+    return this.buildUrl(`order/setOperatorInternal?id=${id}&operator=${operator}`)
+
+  }
+
+  getOperatorsUrl() {
+    return this.buildUrl(`order/operators`)
+  }
+
+  myRoleUrl() {
+    return this.buildUrl(`operator/myRole`)
+  }
+
+  getOperatorOrdersUrl(username?: string) {
+    return username ? this.buildUrl(`operator/orders?username=${username}`) : this.buildUrl(`operator/orders`)
+  }
+  editInternalOrderStateUrl(){
+    return this.buildUrl('operator/editInternalOrderState')
+  }
+
+
+  whoAmIUrl() {
+    return this.buildUrl("operator/whoAmI");
   }
 }

@@ -1,0 +1,72 @@
+<mat-card>
+  <mat-card-title>
+    Prodotto: {{order.product}} | Quantità: {{order.requestedQuantity}}
+  </mat-card-title>
+  <mat-card-content>
+    <div>
+      Cliente: {{order.client}} | Numero ordine cliente:{{order.clientOrderCode}} | Commessa:{{order.commission}}
+    </div>
+    <div style="display: grid; grid-template-columns: 40px auto">
+      <div>
+        <mat-icon>event</mat-icon>
+
+      </div>
+      <div style="display: flex;flex-direction: column;width: 100%">
+        <div>Richiesta: {{getOrderDate(order.requestedDate)}}</div>
+      </div>
+    </div>
+    <div style="margin-top: 12px">
+      <div *ngFor="let internal of order.internalOrders"
+           class="border" [ngStyle]="{'border-color': '#000000'}">
+        <div style="display: grid; grid-template-columns: 40px auto 60px 40px">
+          <div style="display: flex ; flex-direction: column; justify-content: space-between">
+
+            <mat-icon [ngStyle]="{'color': '#000000'}">inventory_2</mat-icon>
+
+          </div>
+          <div>
+            <div>
+              Stato: <b [ngStyle]="{'color': getStatusColor(internal)}">{{getStatus(internal)}}</b>
+            </div>
+            Prodotto:{{internal.productCode}} | quantità: {{internal.productQuantity}}<br>
+            Grezzo:{{internal.rawCode}} | quantità: {{internal.rawQuantity}}<br>
+            Lavorazioni: {{internal.processes.join("-> ")}}<br>
+            Lavorazioni esterne: {{internal.externalTreatments}}<br>
+            Operatore:{{internal.operator}}
+            <div>Data di inizio: {{internal.startDate ? getOrderDate(internal.startDate) : "Data non impostata"}}</div>
+            <div>Data di fine stimata: {{internal.expectedEndDate ? getOrderDate(internal.expectedEndDate) : "Data non impostata"}}</div>
+            <div>Data di fine: {{internal.endDate ? getOrderDate(internal.endDate) : "Data non impostata"}}</div>
+
+
+            <div style="display: flex; width: 100%; justify-content: flex-end">
+              <span *ngIf="getStatus(internal)==='Non iniziato'">
+                <button  (click)="startProduction(internal)"mat-raised-button color="primary">Avvia la lavorazione</button>
+              </span>
+              <span *ngIf="getStatus(internal)==='In lavorazione'">
+                <button (click)="endProduction(internal)" mat-raised-button color="primary">Termina la lavorazione</button>
+              </span>
+
+            </div>
+          </div>
+
+          <div style="margin-right: 18px">
+            {{internal.priority ? "Priorità: " + internal.priority : "Priorità non impostata"}}
+          </div>
+          <div>
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Azioni rapide">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item [disabled]="!internal.endDate && !internal.startDate" (click)="resetProduction(internal)">
+                <mat-icon>restart_alt</mat-icon>
+                <span>Reimposta date prodotto</span>
+              </button>
+
+            </mat-menu>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>

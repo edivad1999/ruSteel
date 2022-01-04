@@ -13,7 +13,7 @@ import {LoginComponent} from './login/login.component';
 import {AppRoutingModule} from './app-routing.module';
 import {MatRippleModule} from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatInputModule} from '@angular/material/input';
 import {LogoutComponent} from './logout/logout.component';
@@ -45,6 +45,11 @@ import {QrComponent} from './components/qr/qr.component';
 import {MatMenuModule} from "@angular/material/menu";
 import { ProcessesComponent } from './components/processes/processes.component';
 import {MatChipsModule} from "@angular/material/chips";
+import { OperatorsComponent } from './operators/operators.component';
+import { OperatorOrdersComponent } from './operator-orders/operator-orders.component';
+import { OperatorSingleOrderComponent } from './operator-orders/operator-single-order/operator-single-order.component';
+import { UsernamePasswordDialogComponent } from './operators/dialogs/username-password-dialog/username-password-dialog.component';
+import { PasswordDialogComponent } from './operators/dialogs/password-dialog/password-dialog.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +66,12 @@ import {MatChipsModule} from "@angular/material/chips";
     RestoreDialogComponent,
     ChangePasswordComponent,
     QrComponent,
-    ProcessesComponent
+    ProcessesComponent,
+    OperatorsComponent,
+    OperatorOrdersComponent,
+    OperatorSingleOrderComponent,
+    UsernamePasswordDialogComponent,
+    PasswordDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -94,7 +104,8 @@ import {MatChipsModule} from "@angular/material/chips";
         MatAutocompleteModule,
         ZXingScannerModule,
         MatMenuModule,
-        MatChipsModule
+        MatChipsModule,
+        FormsModule
     ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],

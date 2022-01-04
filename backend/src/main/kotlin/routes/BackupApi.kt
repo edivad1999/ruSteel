@@ -12,16 +12,21 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import model.dao.InternalOrder
 import model.dao.Order
+import model.dao.UserAuth
+import model.tables.UserAuthTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
+import routes.auth.PasswordDigester
 import routes.auth.Role
 import java.io.FileReader
 
 
 fun Route.backupApi() = route("backup") {
     val db: Database by instance()
+    val digester: PasswordDigester by instance()
 
-    authenticate(Role.USER) {
+    authenticate(Role.ADMIN) {
+
         post("restore") {
             val multipart = call.receiveMultipart()
             val fileTmp = kotlin.runCatching {
@@ -61,7 +66,19 @@ fun Route.backupApi() = route("backup") {
 
                         }
                         request.internalOrders.forEach {
+                            if (it.operator != null) {
+                                UserAuth.find { UserAuthTable.username eq it.operator }.firstOrNull().let { db_user ->
+                                    if (db_user == null) {
+                                        UserAuth.new {
+                                            username = it.operator
+                                            hashPass = digester.digest("placeholderPassword")
+                                            role = if (it.operator == "RIMOSSO") Role.ADMIN.name else Role.USER.name
+                                        }
+                                    }
+                                }
+                            }
                             InternalOrder.new {
+                                priority = it.priority
                                 startDate = it.startDate
                                 endDate = it.endDate
                                 expectedEndDate = it.expectedEndDate
@@ -82,3 +99,5 @@ fun Route.backupApi() = route("backup") {
         }
     }
 }
+
+

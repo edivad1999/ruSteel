@@ -1,0 +1,51 @@
+<div *ngIf="orders===null">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</div>
+<div *ngIf="orders">
+  <lib-central-column>
+    <h1>Ciao {{myName}} </h1>
+    <div style="display: flex   ; width: 100%; justify-content: space-between">
+<div>
+      <mat-chip-list #chipList multiple>
+        <mat-chip #chip
+                  *ngFor="let f of possibleViews"
+                  [selected]="viewFilters.value.includes(f)"
+                  [value]="f"
+                  (click)="clickedChip(f)">
+          <!--                          (removed)="removeProcess(internalControl,process)">-->
+          {{translateViewFilters(f)}}
+        </mat-chip>
+      </mat-chip-list>
+    </div><div>
+      <mat-form-field>
+        <mat-label>
+          Ordina per
+        </mat-label>
+        <mat-select [formControl]="filter">
+          <mat-option *ngFor="let option of this.sortedBy" [value]="option">
+            {{translateSortedByValue(option)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>
+          Verso
+        </mat-label>
+        <mat-select [formControl]="sortedDirection">
+          <mat-option [value]="'DESC'">Decrescente</mat-option>
+          <mat-option [value]="'ASC'">Crescente</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    </div>
+    <div *ngIf="orders.length===0">
+      Non ci sono ordini da lavorare
+    </div>
+    <div *ngIf="orders.length>0">
+      <div *ngFor="let order of orders" style="margin-top: 6px">
+        <app-operator-single-order (requestDone)="updateList()" [order]="order"></app-operator-single-order>
+      </div>
+    </div>
+
+  </lib-central-column>
+</div>

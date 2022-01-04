@@ -27,7 +27,7 @@ export class ManageBackupsComponent extends SubscriberContextComponent implement
       this.repo.getAllOrders(),
       value => {
         const file = new Blob([JSON.stringify(value,null,"\t")], {type: '.json'});
-        saveAs(file, `backup_${Date.now().toString()}.json`)
+        saveAs(file, `backup_${new Date().toISOString()}.json`)
       }
     )
   }

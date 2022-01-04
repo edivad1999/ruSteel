@@ -1,0 +1,42 @@
+<lib-central-column>
+  <div style="display: flex; width:100%; justify-content: flex-end ">
+    <button mat-raised-button (click)="openUsernamePasswordInput()" color="primary">
+      Inserisci nuovo operatore
+    </button>
+
+  </div>
+  <div *ngFor="let operator of operators">
+    <mat-card style="margin-top: 8px">
+      <mat-card-title>
+        <p style="display:flex;align-items: center">
+          <mat-icon style="margin-right: 6px">face</mat-icon>
+          <span>{{operator.name}}</span></p>
+      </mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content style="margin-top: 24px" >
+        <p style="display:flex;align-items: center">
+          <mat-icon style="margin-right: 6px">inventory_2</mat-icon>
+          <span>Ordini assegnati: {{operator.assignedOrders}}</span></p>
+        <p style="display:flex;align-items: center">
+          <mat-icon style="margin-right: 6px">schedule</mat-icon>
+          <span>Ordini non iniziati: {{operator.notStartedOrders}}</span></p>
+        <p style="display:flex;align-items: center">
+          <mat-icon style="margin-right: 6px">play_arrow</mat-icon>
+          <span>Ordini in lavorazione: {{operator.inProgressOrders}}</span></p>
+        <p style="display:flex;align-items: center">
+          <mat-icon style="margin-right: 6px">done</mat-icon>
+          <span>Ordini completati: {{operator.completedOrders}}</span></p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-raised-button color="warn" (click)="removeOperator(operator.name)">
+          Elimina l'operatore
+        </button>
+        <button mat-raised-button color="accent" (click)="openPasswordInput(operator.name)">
+          Modifica password dell'operatore
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+  </div>
+
+</lib-central-column>

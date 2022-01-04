@@ -51,13 +51,13 @@ class InternalOrder(id: EntityID<UUID>) : UUIDEntity(id) {
     var productQuantity by InternalOrdersTable.productQuantity
     var rawCode by InternalOrdersTable.rawCode
     var rawQuantity by InternalOrdersTable.rawQuantity
-    var operator by InternalOrdersTable.operator
+    var operator: String? by InternalOrdersTable.operator
     private var processes by InternalOrdersTable.processes
     var externalTreatments by InternalOrdersTable.externalTreatments
     var startDate: Long? by InternalOrdersTable.startDate
     var endDate: Long? by InternalOrdersTable.endDate
     var expectedEndDate: Long? by InternalOrdersTable.expectedEndDate
-
+    var priority: Int? by InternalOrdersTable.priority
     var orderPrincipal: EntityID<UUID> by InternalOrdersTable.orderPrincipal
 
     fun getProcesses(): List<String> {
@@ -76,6 +76,10 @@ class InternalOrder(id: EntityID<UUID>) : UUIDEntity(id) {
         } else {
             null
         }
+    }
+
+    fun removeOperator() {
+        this.operator = "RIMOSSO"
     }
 }
 

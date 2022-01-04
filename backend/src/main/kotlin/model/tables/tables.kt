@@ -1,6 +1,5 @@
 package model.tables
 
-import model.tables.OrdersTable.nullable
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import routes.auth.Role
@@ -20,7 +19,7 @@ object OrdersTable : UUIDTable("orders", columnName = "id") {
     val client = varchar("client", 50)
     val clientOrderCode = varchar("order", 50)
 
-    val creationTime= long("creationTime")
+    val creationTime = long("creationTime")
 }
 
 object InternalOrdersTable : UUIDTable("internal-orders", columnName = "id") {
@@ -28,13 +27,14 @@ object InternalOrdersTable : UUIDTable("internal-orders", columnName = "id") {
     val productQuantity = integer("productQuantity")
     val rawCode = varchar("rawCode", 50)
     val rawQuantity = integer("rawQuantity")
-    val operator = varchar("operator", 50)
+    val operator = optReference("operator", UserAuthTable.username)
     val processes = varchar("processes", 1000).nullable()
     val externalTreatments = varchar("externalTreatments", 50).nullable()
     val startDate = long("startDate").nullable()
     val endDate = long("endDate").nullable()
     val expectedEndDate = long("expectedEndDate").nullable()
-    val orderPrincipal = reference("orderPrincipal",OrdersTable.id)
+    val orderPrincipal = reference("orderPrincipal", OrdersTable.id)
+    val priority = integer("priority").nullable()
 
 }
 
